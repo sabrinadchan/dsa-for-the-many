@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="utf-8">
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script src="https://d3js.org/topojson.v1.min.js"></script>
@@ -22,6 +23,27 @@ html, body {
   padding: 0px 0px;
   width: 80%;
   font-family: Arial, Helvetica, sans-serif;
+}
+
+header {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.takeAction {
+  background-color: #d93e35;
+  border: none;
+  color: white;
+  padding: 10px;
+  margin: 2.5px 0px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+.takeAction:hover {
+  cursor: pointer;
 }
 
 .selection span {
@@ -147,8 +169,14 @@ footer span {
 </style>
 </head>
 <body>
-  <div id="header">
+  <header>
+    <button class="takeAction" title="Join DSA" onclick="window.location.href='https://dsausa.org/join';">Join DSA</button>
+    <button class="takeAction" title="Make a recurring donation to the DSA For The Many multi-candidate committee" onclick="window.location.href='https://secure.actblue.com/donate/dsa-for-the-many?refcode=eday&recurring=1';">Donate to DSA For The Many</button>
+    <button class="takeAction" title="Sign up for the NYC-DSA Racial Justice Working Group’s DefundNYPD campaign" onclick="window.location.href='https://defundnypd.com';">Sign up for NYC-DSA's DefundNYPD Campaign</button>
     <h1>2020 NY Democratic Primary Election Results</h1>
+  </header>
+  <div id="subHeader">
+    
     <div class="selection">
       <p>
         <span title="Select a race"><b>Race</b> <select class="dropdown" id="race-select"></select></span>&nbsp;&nbsp;
@@ -180,7 +208,46 @@ var races = [
     district: "Queens",
     race: "Queens District Attorney",
     url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTGJ8o2Fy4YxYIv3Vod1I8JdFB-I4LC6k8HAdohel1ooFtkpAfWDBIKHxiFMaXrgzLFMU_oYQjj8f19/pub?gid=760953416&single=true&output=csv"
+  },{
+    district: "NY-14",
+    race: "US Congress NY-14 (Ocasio-Cortez)",
+    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTGJ8o2Fy4YxYIv3Vod1I8JdFB-I4LC6k8HAdohel1ooFtkpAfWDBIKHxiFMaXrgzLFMU_oYQjj8f19/pub?gid=760953416&single=true&output=csv"
+  },{
+    district: "NY-15",
+    race: "US Congress NY-15 (L\u00F3pez)",
+    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTGJ8o2Fy4YxYIv3Vod1I8JdFB-I4LC6k8HAdohel1ooFtkpAfWDBIKHxiFMaXrgzLFMU_oYQjj8f19/pub?gid=760953416&single=true&output=csv"
+  },{
+    district: "SD-18",
+    race: "SD-18 (Salazar)",
+    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTGJ8o2Fy4YxYIv3Vod1I8JdFB-I4LC6k8HAdohel1ooFtkpAfWDBIKHxiFMaXrgzLFMU_oYQjj8f19/pub?gid=760953416&single=true&output=csv"
+  },{
+    district: "SD-25",
+    race: "SD-25 (Brisport)",
+    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTGJ8o2Fy4YxYIv3Vod1I8JdFB-I4LC6k8HAdohel1ooFtkpAfWDBIKHxiFMaXrgzLFMU_oYQjj8f19/pub?gid=760953416&single=true&output=csv"
+  },{
+    district: "AD-36",
+    race: "AD-36 (Mamdani)",
+    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTGJ8o2Fy4YxYIv3Vod1I8JdFB-I4LC6k8HAdohel1ooFtkpAfWDBIKHxiFMaXrgzLFMU_oYQjj8f19/pub?gid=760953416&single=true&output=csv"
+  },{
+    district: "AD-51",
+    race: "AD-51 (Mitaynes)",
+    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTGJ8o2Fy4YxYIv3Vod1I8JdFB-I4LC6k8HAdohel1ooFtkpAfWDBIKHxiFMaXrgzLFMU_oYQjj8f19/pub?gid=760953416&single=true&output=csv"
+  },{
+    district: "AD-57",
+    race: "AD-57 (Souffrant Forrest)",
+    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTGJ8o2Fy4YxYIv3Vod1I8JdFB-I4LC6k8HAdohel1ooFtkpAfWDBIKHxiFMaXrgzLFMU_oYQjj8f19/pub?gid=760953416&single=true&output=csv"
   },
+]
+
+var dsaCandidates = [
+  "Tiffany Caban",
+  "Alexandria Ocasio-Cortez",
+  "Samelys Lopez",
+  "Julia Salazar",
+  "Jabari Brisport",
+  "Zohran Mamdani",
+  "Marcela Mitaynes",
+  "Phara Souffrant Forrest",
 ]
 
 var raceSelect = d3.select("#race-select"),
@@ -218,7 +285,7 @@ caption.onAdd = function (map) {
 };
 
 caption.update = function (d) {
-  this._div.innerHTML = (d ? "<h4>" + parseADED(d.properties.elect_dist) + "</h4><table><thead><tr><th class='name-cell'>Candidates</th><th class='num-cell'>Votes</th><th class='num-cell'>Pct</th></tr></thead>" + results.get(d.properties.elect_dist).map((r,i) => "<tr><td class='name-cell' style='background-color:" + winnerColor(r.race) + "'>" + r.race + "</td><td class='num-cell'>" + r.votes + "</td><td class='num-cell'>" + r.pct.toFixed(2) + "</td><td>" + (!i ? "%" : "") + "</td></tr>").join("") + "</table>" //"<span>(" + turnout.get(d.properties.elect_dist).turnoutPct + "% turnout)</span>"
+  this._div.innerHTML = (d ? "<h4>" + parseADED(d.properties.elect_dist) + "</h4><table><thead><tr><th class='name-cell'>Candidates</th><th class='num-cell'>Votes</th><th class='num-cell'>Pct</th></tr></thead>" + results.get(d.properties.elect_dist).map((r,i) => "<tr><td class='name-cell' style='background-color:" + assignWinnerColor(r.race) + "'>" + r.race + "</td><td class='num-cell'>" + r.votes + "</td><td class='num-cell'>" + r.pct.toFixed(2) + "</td><td>" + (!i ? "%" : "") + "</td></tr>").join("") + "</table>" //"<span>(" + turnout.get(d.properties.elect_dist).turnoutPct + "% turnout)</span>"
       : "Hover over a precinct");
 };
 
@@ -252,10 +319,16 @@ var svg = d3.select("#map").select("svg");
 // define color scales
 // winner colors chosen with http://tristen.ca/hcl-picker/
 var winnerColor = d3.scaleOrdinal(
-    ["#F68481","#CF9FD3","#5CC7DD","#72D793","#E6CD58"]
-  ).unknown("#76797E");
-var pctColor = d3.scaleQuantile()
+    //["#CF9FD3","#5CC7DD","#72D793","#E6CD58"]
+    ["#BA80BF","#5CC7DD","#72D793","#E6CD58"]
+  ).unknown("#76797E"),
+    pctColor = d3.scaleQuantile()
     .domain([0, 75]);
+
+function assignWinnerColor(candidate) {
+  //return dsaCandidates.includes(candidate) ? "#F68481" : winnerColor(candidate);
+  return dsaCandidates.includes(candidate) ? "#D93E35" : winnerColor(candidate);
+}
 
 // load geospatial boundaries
 d3.json("nyc-aded.topojson?1")
@@ -299,8 +372,10 @@ function draw(aded) {
   caption.update(null);
 
   // filter only aded relevant to election
-  var useADED = results.keys(),
+  var useADED = results.keys()
       filteredADED = topojson.feature(aded, aded.objects.aded).features.filter(d => useADED.includes(d.properties.elect_dist));
+
+  //var filteredADED = filteredADED = topojson.feature(aded, aded.objects.aded).features.filter(d => ["23001", "23002", "23003"].includes(d.properties.elect_dist));
 
   // calculate overall results for chosen election
   var flat = [].concat.apply([], results.values());
@@ -314,7 +389,7 @@ function draw(aded) {
 
   // set categorical colors based on candidates
   // only uses top 6 candidates
-  winnerColor.domain(candidates2.slice(0, 5))
+  winnerColor.domain(candidates2.filter(d => !dsaCandidates.includes(d)).slice(0, 4))
 
   // populate candidate drop down
   candidateSelect.selectAll("option.candidate-option")
@@ -332,12 +407,15 @@ function draw(aded) {
   d3.select("#results-table tbody").selectAll("tr")
       .data(sortedSummary)
     .enter().append("tr")
-      .html((d, i) => "<td class='name-cell" + (!i ? " winner'" : "'") + " style='background-color:" + winnerColor(d.key) + "'><span>" + d.key + "</span>" + (!i ? "<span class='win-symbol'> &#10003;</span>" : "") + "<td class='num-cell'>" + d.value.toLocaleString() + "</td><td class='num-cell'>" + (d.value / totalVotes * 100).toFixed(2) + "</td><td>" + (!i ? "%" : "") + "</td>")
+      .html((d, i) => "<td class='name-cell" + (!i ? " winner'" : "'") + " style='background-color:" + assignWinnerColor(d.key) + "'><span>" + d.key + "</span>" + (!i ? "<span class='win-symbol'> &#10003;</span>" : "") + "<td class='num-cell'>" + d.value.toLocaleString() + "</td><td class='num-cell'>" + (d.value / totalVotes * 100).toFixed(2) + "</td><td>" + (!i ? "%" : "") + "</td>")
 
   /*var districtTurnout = (d3.sum(filteredADED, d => turnout.get(d.properties.elect_dist).ballotsCast) * 100.0 / d3.sum(filteredADED, d => turnout.get(d.properties.elect_dist).registeredVoters)).toFixed(2);
 
   d3.select("#total-results")
-      .html(totalVotes.toLocaleString() + " votes (" + districtTurnout + "% turnout)<br />" + filteredADED.length.toLocaleString() + " of " + filteredADED.length.toLocaleString() + " aded reporting")*/
+      .html(totalVotes.toLocaleString() + " votes (" + districtTurnout + "% turnout)<br />" + filteredADED.length.toLocaleString() + " of " + filteredADED.length.toLocaleString() + " election districts reporting")*/
+
+  d3.select("#total-results")
+      .html(filteredADED.filter(d => results.get(d.properties.elect_dist)[0].votes).length.toLocaleString() + " of " + filteredADED.length.toLocaleString() + " election districts reporting")
 
   // render precinct choropleth
   var adedPath = svg.selectAll("path")
@@ -345,7 +423,7 @@ function draw(aded) {
     .enter().append("path")
       .attr("class", "precinct-path")
       .attr("id", d => "aded" + d.properties.elect_dist)
-      .attr("fill", d => { var winner = results.get(d.properties.elect_dist)[0]; return winner.votes ? winnerColor(winner.race) : "white" })
+      .attr("fill", d => { var winner = results.get(d.properties.elect_dist)[0]; return winner.votes ? assignWinnerColor(winner.race) : "white" })
         .on("mouseover", function(d) {
         d3.select(this).classed("active", true);
         d3.select(this).raise();
@@ -377,7 +455,7 @@ function draw(aded) {
   // center map on feature and reset home position
   var bbox = d3.geoBounds({type: "FeatureCollection", "features": filteredADED});
   bbox.forEach(b => b.reverse());
-  //map.flyToBounds(bbox)
+  map.flyToBounds(bbox);
   //zoomHome.setHomeBounds(bbox);
 
   map.on("moveend", reset);
@@ -402,19 +480,20 @@ function projectPoint(x, y) {
 function updateColors(candidate) {
   if (candidate == "All") {
     d3.selectAll(".precinct-path")
-        .attr("fill", d => winnerColor(results.get(d.properties.elect_dist)[0].race))
+        .attr("fill", d => { var winner = results.get(d.properties.elect_dist)[0]; return winner.votes ? assignWinnerColor(winner.race) : "white" })
   } else {
     // create discrete sequential color scale from categorical color corresponding to candidate
     var c = d3.scaleLinear().domain([0,4])
         .interpolate(d3.interpolateHsl)
         .range([
-          d3.hsl(winnerColor(candidate)).brighter(1),
-          d3.hsl(winnerColor(candidate)).darker(2.5)
+          d3.hsl(assignWinnerColor(candidate)).brighter(1),
+          d3.hsl(assignWinnerColor(candidate)).darker(2.5)
         ]);
     pctColor.range([...Array(5).keys()].map(x => c(x)));
 
     d3.selectAll(".precinct-path")
-        .attr("fill", d => pctColor(results.get(d.properties.elect_dist).find(x => x.race == candidate).pct));
+        //.attr("fill", d => pctColor(results.get(d.properties.elect_dist).find(x => x.race == candidate).pct));
+        .attr("fill", d => { var dist = results.get(d.properties.elect_dist); return dist[0].votes ? pctColor(dist.find(x => x.race == candidate).pct) : "white" });
   }
 }
 
