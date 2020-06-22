@@ -205,7 +205,7 @@ var map = new L.Map("map", {
     attributionControl: false, // attribution in footer
 });
 
-map.addLayer(new L.StamenTileLayer("toner"));
+map.addLayer(new L.StamenTileLayer("toner-lite"));
 
 var caption = L.control({
   maxHeight: 100,
@@ -218,7 +218,7 @@ caption.onAdd = function (map) {
 };
 
 caption.update = function (d) {
-  this._div.innerHTML = (d ? "<h4>" + parseADED(d.properties.elect_dist) + "</h4><table><thead><tr><th class='name-cell'>Candidates</th><th class='num-cell'>Votes</th><th class='num-cell'>Pct</th></tr></thead>" + results.get(d.properties.elect_dist).map((r,i) => "<tr><td class='name-cell' style='background-color:" + winnerColor(r.race) + "'>" + r.race + "</td><td class='num-cell'>" + r.votes + "</td><td class='num-cell'>" + r.pct.toFixed(2) + "</td><td>" + (!i ? "%" : "") + "</td></tr>").join("") + "</table>" //"<span>(" + turnout.get(d.properties.full_text).turnoutPct + "% turnout)</span>"
+  this._div.innerHTML = (d ? "<h4>" + parseADED(d.properties.elect_dist) + "</h4><table><thead><tr><th class='name-cell'>Candidates</th><th class='num-cell'>Votes</th><th class='num-cell'>Pct</th></tr></thead>" + results.get(d.properties.elect_dist).map((r,i) => "<tr><td class='name-cell' style='background-color:" + winnerColor(r.race) + "'>" + r.race + "</td><td class='num-cell'>" + r.votes + "</td><td class='num-cell'>" + r.pct.toFixed(2) + "</td><td>" + (!i ? "%" : "") + "</td></tr>").join("") + "</table>" //"<span>(" + turnout.get(d.properties.elect_dist).turnoutPct + "% turnout)</span>"
       : "Hover over a precinct");
 };
 
@@ -273,8 +273,7 @@ d3.json("nyc-aded.topojson?1")
               if (c != "Write In") candidates.push(c[1]);
             }
           })
-          data.forEach(d => results.set(d["AD-ED"].replace("-", ""), candidates.map(c => { return {race: c, votes: +d["candidate|" + c], pct: +d["candidate|" + c] / d.TOTAL * 100 }; }).sort((a,b) => b.votes - a.votes)))
-          console.log(candidates);
+          data.forEach(d => results.set(d["AD-ED"].replace("-", ""), candidates.map(c => { return {race: c, votes: +d["candidate|" + c], pct: (+d.TOTAL ? +d["candidate|" + c] / +d.TOTAL * 100 : 0) }; }).sort((a,b) => b.votes - a.votes)))
           draw(aded);
         });
     });
@@ -300,10 +299,8 @@ function draw(aded) {
   caption.update(null);
 
   // filter only aded relevant to election
-  var useADED = results.keys();
-  var adedFeatures = topojson.feature(aded, aded.objects.aded),
-      filteredADED = adedFeatures.features.filter(d => useADED.includes(d.properties.elect_dist));
-  console.log(results);
+  var useADED = results.keys(),
+      filteredADED = topojson.feature(aded, aded.objects.aded).features.filter(d => useADED.includes(d.properties.elect_dist));
 
   // calculate overall results for chosen election
   var flat = [].concat.apply([], results.values());
@@ -337,12 +334,10 @@ function draw(aded) {
     .enter().append("tr")
       .html((d, i) => "<td class='name-cell" + (!i ? " winner'" : "'") + " style='background-color:" + winnerColor(d.key) + "'><span>" + d.key + "</span>" + (!i ? "<span class='win-symbol'> &#10003;</span>" : "") + "<td class='num-cell'>" + d.value.toLocaleString() + "</td><td class='num-cell'>" + (d.value / totalVotes * 100).toFixed(2) + "</td><td>" + (!i ? "%" : "") + "</td>")
 
-  /*var districtTurnout = (d3.sum(filteredADED, d => turnout.get(d.properties.full_text).ballotsCast) * 100.0 / d3.sum(filteredADED, d => turnout.get(d.properties.full_text).registeredVoters)).toFixed(2);
+  /*var districtTurnout = (d3.sum(filteredADED, d => turnout.get(d.properties.elect_dist).ballotsCast) * 100.0 / d3.sum(filteredADED, d => turnout.get(d.properties.elect_dist).registeredVoters)).toFixed(2);
 
   d3.select("#total-results")
       .html(totalVotes.toLocaleString() + " votes (" + districtTurnout + "% turnout)<br />" + filteredADED.length.toLocaleString() + " of " + filteredADED.length.toLocaleString() + " aded reporting")*/
-
-  console.log(filteredADED)
 
   // render precinct choropleth
   var adedPath = svg.selectAll("path")
@@ -350,7 +345,7 @@ function draw(aded) {
     .enter().append("path")
       .attr("class", "precinct-path")
       .attr("id", d => "aded" + d.properties.elect_dist)
-      .attr("fill", d => winnerColor(results.get(d.properties.elect_dist)[0].race))
+      .attr("fill", d => { var winner = results.get(d.properties.elect_dist)[0]; return winner.votes ? winnerColor(winner.race) : "white" })
         .on("mouseover", function(d) {
         d3.select(this).classed("active", true);
         d3.select(this).raise();
@@ -372,12 +367,18 @@ function draw(aded) {
         caption.update(null);
       });
 
+  var boundaryPath = svg.append("path")
+      .datum(topojson.merge(aded, aded.objects.aded.geometries.filter(d => useADED.includes(d.properties.elect_dist))))
+      .attr("class", "boundary")
+      .attr("fill", "none")
+      .attr("stroke", "black")
+      .attr("stroke-width", "2px");
+
   // center map on feature and reset home position
   var bbox = d3.geoBounds({type: "FeatureCollection", "features": filteredADED});
   bbox.forEach(b => b.reverse());
   //map.flyToBounds(bbox)
   //zoomHome.setHomeBounds(bbox);
-  console.log(bbox);
 
   map.on("moveend", reset);
   reset();
@@ -385,6 +386,7 @@ function draw(aded) {
   // reposition SVG on map on zoom/translate
   function reset() {
     adedPath.attr("d", path);
+    boundaryPath.attr("d", path)
   }
 }
 
@@ -400,7 +402,7 @@ function projectPoint(x, y) {
 function updateColors(candidate) {
   if (candidate == "All") {
     d3.selectAll(".precinct-path")
-        .attr("fill", d => winnerColor(results.get(d.properties.full_text)[0].race))
+        .attr("fill", d => winnerColor(results.get(d.properties.elect_dist)[0].race))
   } else {
     // create discrete sequential color scale from categorical color corresponding to candidate
     var c = d3.scaleLinear().domain([0,4])
@@ -454,7 +456,7 @@ function updateLegend(candidate) {
     var legendAxis = d3.axisBottom(legendScale)
         .tickSize(0)
         .tickValues(pctColor.quantiles())
-        .tickFormat(d => d);
+        .tickFormat(d => d == 60 ? "60+" : d);
 
     legendSvg.append("g")
         .attr("class", "axis")
@@ -475,9 +477,9 @@ function parseADED(p) {
     <span>
       Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.
     </span><br>
-    <span>Source: <a href="https://github.com/spencerchan/maps">https://github.com/spencerchan/maps</a> |
+    <span>Source: <a href="https://github.com/sabrinadchan/maps">https://github.com/sabrinadchan/maps</a> |
     </span>
-    <span>Geospatial Data: <a href="https://data.cityofnewyork.us/City-Government/Election-Districts/h2n3-98hq">NYC Open Data>
+    <span>Geospatial Data: <a href="https://data.cityofnewyork.us/City-Government/Election-Districts/h2n3-98hq">NYC Open Data</a>
     </span> | 
     <span>Election results: <a href="https://vote.nyc/">NYC BOE</a>
     </span>
