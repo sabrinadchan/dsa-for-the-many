@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+<link rel="icon" href="4_red_full.png?v=1" type="image/png">
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="https://d3js.org/topojson.v1.min.js"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
+   integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+   crossorigin="">
+ <!-- Make sure you put this AFTER Leaflet's CSS -->
+ <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
+   integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
+   crossorigin=""></script>
+<script src="https://stamen-maps.a.ssl.fastly.net/js/tile.stamen.js"></script>
+<style type="text/css">
+html, body {
+  margin: 0 10%;
+  padding: 0px 0px;
+  width: 80%;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+header {
+  margin-top: 30px;
+  text-align: center;
+}
+
+h1 {
+  text-align: center;
+}
+
+p#take-action {
+  margin: 10px 0;
+}
+
+.action-button {
+  background-color: #EC1F27;
+  border: 1px solid black;
+  border-radius: 3px;
+  color: white;
+  padding: 10px;
+  margin: 2.5px 0px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 14px;
+  display: inline-block;
+}
+
+.action-button:hover {
+  cursor: pointer;
+}
+
+.selection span {
+  display: inline-block;
+}
+    
+#results {
+  font-size: 16px;
+  margin: 20px 0px;
+}
+
+td {
+  border-radius: 3px;
+}
+
+td.winner {
+  border: 2px solid black;
+}
+
+td.name-cell, th.name-cell {
+  text-align: left;
+  padding: 5px 45px 5px 5px;
+  min-width: 125px;
+}
+
+td.name-cell {
+  border: 1px solid black;
+}
+
+td.num-cell, th.num-cell {
+  text-align: right;
+  padding-left: 10px;
+}
+
+#total-results {
+  font-size: 10px;
+  margin: 3px;
+}
+
+#map {
+  height: 720px;
+  width: 100%;
+}
+
+.precinct-path {
+  fill-opacity: 0.85;
+  stroke: #000;
+  stroke-width: 0.25px;
+}
+
+.precinct-path.active {
+  stroke-width: 1.5px;
+}
+
+.leaflet-overlay-pane svg path{
+  pointer-events: auto;
+}
+
+.caption {
+  padding: 6px 8px;
+  font-size: 12px;
+  background: #ddd;
+  opacity: 1;
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  border-radius: 5px;
+}
+
+.caption h4 {
+  margin: 0 3px;
+}
+
+.caption span {
+  margin: 0 3px;
+  font-size: 10px;
+}
+
+.caption td.name-cell, th.name-cell {
+  padding: 2px 15px 2px 2px;
+}
+
+.svg-legend {
+  width: 160px;
+  height: 40px;
+}
+
+.axis path, .axis line {
+  display: none;
+}
+
+footer {
+  margin-top: 30px;
+  font-size: 10px;
+  text-align: center;
+}
+
+footer span {
+  display: inline-block;
+}
+
+@media screen and (max-width: 1200px) {
+  html, body {
+    margin: 0 5%;
+    width: 90%;
+  }
+}
+
+@media screen and (max-width: 720px) {
+  html, body {
+    margin: 0 0;
+    width: 100%;
+  }
+
+  #map {
+    height: 528px;
+  }
+
+  .caption {
+    overflow-y: auto;
+    max-height: 150px;
+  }
+
+  footer {
+    margin-top: 10px;
+    text-align: left;
+  }
+}
+</style>
+</head>
+<body>
+  <header>
+    <img id="nyc-dsa-logo" src="4_red_full.png" alt="logo" style="width:100px;height:100px" />
+    <br>
+    <p id="take-action">
+      <button class="action-button" title="Return to the main page" onclick="window.location.href='index.html';">Main Page</button>
+      <button class="action-button" title="Join DSA" onclick="window.location.href='https://dsausa.org/join';">Join DSA</button>
+      <button class="action-button" title="Make a recurring donation to the DSA For The Many multi-candidate committee" onclick="window.location.href='https://secure.actblue.com/donate/dsa-for-the-many?refcode=eday&recurring=1';">Donate to DSA For The Many</button>
+      <button class="action-button" title="Sign up for the NYC-DSA Racial Justice Working Group’s DefundNYPD campaign" onclick="window.location.href='https://defundnypd.com';">Join the #DefundNYPD Campaign</button>
+    </p>
+  </header>
+  <h1>2020 NY Democratic Primary Election Results</h1>
+  <div class="selection">
+    <p>
+      <span title="Select a race"><b>Race</b> <select class="dropdown" id="race-select"></select></span>&nbsp;&nbsp;
+      <span title="Show election results by candidate"><b>Candidate</b> <select class="dropdown" id="candidate-select"><option value="All">All Candidates</option></select></span>
+    </p>
+  </div>
+
+  <div id="results">
+    <table id="results-table">
+      <thead>
+        <tr><th class="name-cell">Candidates</th><th class="num-cell">Votes</th><th class="num-cell">Pct</th></tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+    <p id="total-results">
+    </p>
+  </div>
+  <div id="map">
+  </div>
+<script type="text/javascript">
+var candidates,
+    results;
+
+// define dropdown lists and their options
+var races = [
+  {
+    district: "NY14",
+    race: "US Congress NY-14 (Ocasio-Cortez)",
+    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0uWtI7YuT_LrP7BsoKYEofYB43E5re4PtODcTUuYSm4ln88r7lUBuCCvSSaPNRs0hmsCVnlp8amy9/pub?gid=2030118375&single=true&output=csv"
+  },{
+    district: "NY15",
+    race: "US Congress NY-15 (L\u00F3pez)",
+    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0uWtI7YuT_LrP7BsoKYEofYB43E5re4PtODcTUuYSm4ln88r7lUBuCCvSSaPNRs0hmsCVnlp8amy9/pub?gid=2065613462&single=true&output=csv"
+  },{
+    district: "SD18",
+    race: "SD-18 (Salazar)",
+    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0uWtI7YuT_LrP7BsoKYEofYB43E5re4PtODcTUuYSm4ln88r7lUBuCCvSSaPNRs0hmsCVnlp8amy9/pub?gid=1095710536&single=true&output=csv"
+  },{
+    district: "SD25",
+    race: "SD-25 (Brisport)",
+    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0uWtI7YuT_LrP7BsoKYEofYB43E5re4PtODcTUuYSm4ln88r7lUBuCCvSSaPNRs0hmsCVnlp8amy9/pub?gid=1784162904&single=true&output=csv"
+  },{
+    district: "AD36",
+    race: "AD-36 (Mamdani)",
+    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0uWtI7YuT_LrP7BsoKYEofYB43E5re4PtODcTUuYSm4ln88r7lUBuCCvSSaPNRs0hmsCVnlp8amy9/pub?gid=192661538&single=true&output=csv"
+  },{
+    district: "AD51",
+    race: "AD-51 (Mitaynes)",
+    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0uWtI7YuT_LrP7BsoKYEofYB43E5re4PtODcTUuYSm4ln88r7lUBuCCvSSaPNRs0hmsCVnlp8amy9/pub?gid=414477029&single=true&output=csv"
+  },{
+    district: "AD57",
+    race: "AD-57 (Souffrant Forrest)",
+    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0uWtI7YuT_LrP7BsoKYEofYB43E5re4PtODcTUuYSm4ln88r7lUBuCCvSSaPNRs0hmsCVnlp8amy9/pub?gid=767205731&single=true&output=csv"
+  },
+]
+
+var dsaCandidates = ["Alexandria Ocasio-Cortez", "Samelys Lopez", "Jamaal Bowman", "Julia Salazar", "Jabari Brisport", "Zohran Kwame Mamdani", "Marcela Mitaynes", "Phara Souffrant Forrest",]
+
+var candidateCmap = {
+  "Alexandria Ocasio-Cortez": {color: "#EC1F27", },
+  "Michelle Caruso-Cabrera": {color: "#5CC7DD", },
+  "Badrun N. Khan": {color: "#BA80BF", },
+  "Samuel H. Sloan": {color: "#72D793", },
+  "Samelys Lopez": {color: "#EC1F27", },
+  "Ritchie Torres": {color: "#5CC7DD", },
+  "Reuben Diaz": {color: "#BA80BF", },
+  "Michael A. Blake": {color: "#72D793", },
+  "Melissa Mark-Viverito": {color: "#E6CD58", },
+  "Jamaal Bowman": {color: "#EC1F27", },
+  "Julia Salazar": {color: "#EC1F27", },
+  "Andy J. Marte": {color: "#5CC7DD", },
+  "Jabari Brisport": {color: "#EC1F27", },
+  "Tremaine S. Wright": {color: "#5CC7DD", },
+  "Jason Salmon": {color: "#BA80BF", },
+  "Zohran Kwame Mamdani": {color: "#EC1F27", },
+  "Aravella Simotas": {color: "#5CC7DD", },
+  "Marcela Mitaynes": {color: "#EC1F27", },
+  "Felix W. Ortiz": {color: "#5CC7DD", },
+  "Genesis E. Aquino": {color: "#BA80BF"},
+  "Katherine P. Walsh": {color: "#72D793", },
+  "Phara Souffrant Forrest": {color: "#EC1F27", },
+  "Walter T. Mosley III": {color: "#5CC7DD", },
+}
+
+var raceSelect = d3.select("#race-select"),
+    candidateSelect = d3.select("#candidate-select"); // populated after election chosen
+
+raceSelect.selectAll("option.race-option")
+    .data(races)
+  .enter().append("option")
+    .attr("class", "race-option")
+    .attr("url", d => d.url)
+    .attr("value", d => d.district)
+    .text(d => d.race);
+
+raceSelect.node().selectedIndex = -1;
+
+// initialize map
+var map = new L.Map("map", {
+    center: [40.71, -74.00],
+    zoom: 11,
+    zoomControl: false,
+    attributionControl: false, // attribution in footer
+});
+
+map.addLayer(new L.StamenTileLayer("toner-lite"));
+
+var caption = L.control({
+  maxHeight: 100,
+});
+
+caption.onAdd = function (map) {
+  this._div = L.DomUtil.create("div", "caption");
+  this.update();
+  return this._div;
+};
+
+caption.update = function (d) {
+  this._div.innerHTML = (d ? "<h4>" + parseADED(d.properties.elect_dist) + "</h4><table><thead><tr><th class='name-cell'>Candidates</th><th class='num-cell'>Votes</th><th class='num-cell'>Pct</th></tr></thead>" + results.get(d.properties.elect_dist).candidates.map((r,i) => "<tr><td class='name-cell' style='background-color:" + assignWinnerColor(r.race) + "'>" + r.race + "</td><td class='num-cell'>" + r.votes + "</td><td class='num-cell'>" + r.pct.toFixed(2) + "</td><td>" + (!i ? "%" : "") + "</td></tr>").join("") + "</table>" //"<span>(" + turnout.get(d.properties.elect_dist).turnoutPct + "% turnout)</span>"
+      : "Hover over a precinct");
+};
+
+caption.addTo(map);
+
+var captionDiv = d3.select(".caption").node();
+if (!L.Browser.touch) {
+  L.DomEvent.disableClickPropagation(captionDiv);
+  L.DomEvent.disableScrollPropagation(captionDiv);
+} else {
+  L.DomEvent.disableClickPropagation(captionDiv);
+}
+
+//var zoomHome = L.Control.zoomHome();
+//zoomHome.addTo(map);
+
+var legend = L.control({position: 'bottomleft'});
+
+legend.onAdd = function(map) {
+  var div = L.DomUtil.create("div", "legend caption");
+  div.innerHTML = "<svg class='svg-legend'></svg>"
+
+  return div;
+}
+
+// add svg overlay to map
+L.svg().addTo(map); // render all paths with SVG
+
+var svg = d3.select("#map").select("svg");
+
+// define color scales
+// winner colors chosen with http://tristen.ca/hcl-picker/
+var winnerColor = d3.scaleOrdinal(
+    ["#BA80BF","#5CC7DD","#72D793","#E6CD58"]
+  ).unknown("#76797E"),
+    pctColor = d3.scaleQuantile()
+    .domain([0, 75]);
+
+function assignWinnerColor(candidate) {
+  //return dsaCandidates.includes(candidate) ? "#EC1F27" : winnerColor(candidate);
+  return (candidate in candidateCmap ? candidateCmap[candidate].color : "#76797E");
+}
+
+var url = new URL(window.location.href),
+    district = url.searchParams.get("district");
+
+// load geospatial boundaries
+var info_columns = ["ad_ed", "total_reg_dems", "absentee_requested", "total"]
+d3.json("nyc-aded.topojson?1")
+  .then(aded => {
+    raceSelect.on("change", function() {
+      update(this.value);
+    });
+
+    candidateSelect.on("change", function() {
+      var candidate = this.value;
+      updateColors(candidate);
+      updateLegend(candidate);
+    });
+
+  function update(district) {
+    candidates = [];
+    results = d3.map();
+
+    var raceDD = raceSelect.node();
+        url = raceDD.options[raceDD.selectedIndex].getAttribute("url");
+
+    d3.csv(url + "&rand" + Math.floor(Math.random() * 1000) + "=1")
+      .then(data => {
+        data.columns.forEach(d => { if (!info_columns.includes(d) && d != "") candidates.push(d) });
+        data.forEach(d => results.set(d.ad_ed.replace("-", ""), { absentee_requested: d.absentee_requested, total_reg_dems: d.total_reg_dems, candidates: candidates.map(c => { return {race: c, votes: +d[c], pct: (+d.total ? +d[c] / +d.total * 100 : 0) }; }).sort((a,b) => b.votes - a.votes)}));
+        draw(aded);
+      });
+    }
+
+    if (district) {
+      raceSelect.property("value", district);
+      update(district);
+    }
+  });
+
+
+// draw svg layer + add caption
+function draw(aded) {
+  var transform = d3.geoTransform({point: projectPoint}),
+      path = d3.geoPath().projection(transform);
+
+  // clear old path and values
+  d3.selectAll(".precinct-path").remove();
+  d3.selectAll(".candidate-option").remove();
+  d3.selectAll("#results-table tbody tr").remove();
+  d3.select("#total-results").html("");
+  d3.select("div.legend").remove();
+  d3.select(".boundary").remove();
+  caption.update(null);
+
+  // filter only aded relevant to election
+  var useADED = results.keys()
+      filteredADED = topojson.feature(aded, aded.objects.aded).features.filter(d => useADED.includes(d.properties.elect_dist));
+
+  // calculate overall results for chosen election
+  var flat = [].concat.apply([], results.values().map(x => x.candidates));
+  var summary = d3.nest()
+    .key(d => d.race)
+    .rollup(v => d3.sum(v, d => d.votes))
+    .object(flat);
+
+  var sortedSummary = d3.entries(summary).sort((a, b) => d3.descending(a.value, b.value)),
+      candidates2 = sortedSummary.map(d => d.key);
+
+  // set categorical colors based on candidates
+  // only uses top 6 candidates
+  winnerColor.domain(candidates2.filter(d => !dsaCandidates.includes(d) && d != "Write In").slice(0, 4))
+
+  // populate candidate drop down
+  candidateSelect.selectAll("option.candidate-option")
+    .data(candidates2)
+  .enter().append("option")
+    .attr("class", "candidate-option")
+    .attr("value", d => d)
+    .text(d => d);
+
+  candidateSelect.node().disabled = (candidates2.length < 2);
+
+  var totalVotes = d3.sum(d3.values(summary)),
+      totalRegistered = d3.sum(d3.values(results), d => d.total_reg_dems);
+
+  // update results table + caption
+  d3.select("#results-table tbody").selectAll("tr")
+      .data(sortedSummary)
+    .enter().append("tr")
+      .html((d, i) => "<td class='name-cell' style='background-color:" + assignWinnerColor(d.key) + "'><span>" + d.key + "</span>" + "<td class='num-cell'>" + d.value.toLocaleString() + "</td><td class='num-cell'>" + (totalVotes ? (d.value / totalVotes * 100) : 0).toFixed(2) + "</td><td>" + (!i ? "%" : "") + "</td>");
+      //.html((d, i) => "<td class='name-cell" + (!i ? " winner'" : "'") + " style='background-color:" + assignWinnerColor(d.key) + "'><span>" + d.key + "</span>" + (!i ? "<span class='win-symbol'> &#10003;</span>" : "") + "<td class='num-cell'>" + d.value.toLocaleString() + "</td><td class='num-cell'>" + (d.value / totalVotes * 100).toFixed(2) + "</td><td>" + (!i ? "%" : "") + "</td>")
+
+  d3.select("#total-results")
+      .html(totalVotes.toLocaleString() + " votes (" + (totalVotes / totalRegistered * 100).toFixed(2) + "% turnout)<br />" + filteredADED.filter(d => results.get(d.properties.elect_dist).candidates[0].votes).length.toLocaleString() + " of " + filteredADED.length.toLocaleString() + " election districts reporting")
+
+  // render precinct choropleth
+  var adedPath = svg.selectAll("path")
+      .data(filteredADED)
+    .enter().append("path")
+      .attr("class", "precinct-path")
+      .attr("id", d => "aded" + d.properties.elect_dist)
+      .attr("fill", d => { var winner = results.get(d.properties.elect_dist).candidates[0]; return winner.votes ? assignWinnerColor(winner.race) : "white" })
+        .on("mouseover", function(d) {
+        d3.select(this).classed("active", true);
+        d3.select(this).raise();
+        caption.update(d);      
+      })
+      .on("touchstart", function(d) {
+        if (d3.select(this).classed("active")) {
+          d3.select(this).classed("active", null);
+          caption.update(null);
+        } else {
+          d3.select(".precinct-path.active").classed("active", null);
+          d3.select(this).classed("active", true);
+          d3.select(this).raise();
+          caption.update(d);
+        }
+      })
+      .on("mouseout", function(d) {
+        d3.select(".precinct-path.active").classed("active", null);
+        caption.update(null);
+        d3.select(this).lower();
+      });
+
+  var boundaryPath = svg.append("path")
+      .datum(topojson.merge(aded, aded.objects.aded.geometries.filter(d => useADED.includes(d.properties.elect_dist))))
+      .attr("class", "boundary")
+      .attr("fill", "none")
+      .attr("stroke", "black")
+      .attr("stroke-width", "2px");
+
+  // center map on feature and reset home position
+  var bbox = d3.geoBounds({type: "FeatureCollection", "features": filteredADED});
+  bbox.forEach(b => b.reverse());
+  map.flyToBounds(bbox);
+  //zoomHome.setHomeBounds(bbox);
+
+  map.on("moveend", reset);
+  reset();
+  
+  // reposition SVG on map on zoom/translate
+  function reset() {
+    adedPath.attr("d", path);
+    boundaryPath.attr("d", path)
+  }
+}
+
+// see: https://bost.ocks.org/mike/leaflet/
+function projectPoint(x, y) {
+  var point = map.latLngToLayerPoint(new L.LatLng(y, x));
+  this.stream.point(point.x, point.y);
+}
+
+// update colors when candidate selected
+// when "All" is chosen, categorical color scale shows precinct winners
+// when an individual candidate is chosen, discrete sequential color scale shows candidate vote share
+function updateColors(candidate) {
+  if (candidate == "All") {
+    d3.selectAll(".precinct-path")
+        .attr("fill", d => { var winner = results.get(d.properties.elect_dist).candidates[0]; return winner.votes ? assignWinnerColor(winner.race) : "white" })
+  } else {
+    // create discrete sequential color scale from categorical color corresponding to candidate
+    var c = d3.scaleLinear().domain([0,4])
+        .interpolate(d3.interpolateHsl)
+        .range([
+          d3.hsl(assignWinnerColor(candidate)).brighter(1),
+          d3.hsl(assignWinnerColor(candidate)).darker(2.5)
+        ]);
+    pctColor.range([...Array(5).keys()].map(x => c(x)));
+
+    d3.selectAll(".precinct-path")
+        //.attr("fill", d => pctColor(results.get(d.properties.elect_dist).find(x => x.race == candidate).pct));
+        .attr("fill", d => { var dist = results.get(d.properties.elect_dist).candidates; return dist[0].votes ? pctColor(dist.find(x => x.race == candidate).pct) : "white" });
+  }
+}
+
+// updates legend color scale when new candidate chosen
+function updateLegend(candidate) {
+  if (candidate == "All") {
+    d3.select("div.legend").remove();
+  } else {
+    legend.addTo(map);
+
+    var legendSvg = d3.select(".svg-legend"),
+        legendWidth = 160,
+        legendHeight = 40,
+        rectWidth = 25,
+        legendMarginX = (legendWidth - 5 * rectWidth) / 2,
+        legendMarginY = legendHeight / 4;
+
+    legendSvg.append("text")
+        .attr("x", legendWidth / 2)
+        .attr("y", legendMarginY)
+        .attr("text-anchor", "middle")
+        .style("font-size", "10px")
+        .style("font-weight", "bold")
+        .text(candidate + "'s vote %");
+
+    legendSvg.append("g").selectAll(".rect")
+        .data([0].concat(pctColor.quantiles()))
+      .enter().append("rect")
+        .attr("x", (_, i) => legendMarginX + i * rectWidth)
+        .attr("y", 15)
+        .attr("height", 12)
+        .attr("width", rectWidth)
+        .attr("fill", d => pctColor(d));
+
+    var legendScale = d3.scaleLinear()
+        .domain([0,60])
+        .range([0, 4 * rectWidth]);
+
+    var legendAxis = d3.axisBottom(legendScale)
+        .tickSize(0)
+        .tickValues(pctColor.quantiles())
+        .tickFormat(d => d == 60 ? "60+" : d);
+
+    legendSvg.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(" + legendMarginX + "," + (legendHeight - legendMarginY) + ")")
+        .call(legendAxis);
+  }
+}
+
+function parseADED(p) {
+  return isNaN(p) ? p : "AD " + +p.slice(0,2) + " ED " + +p.slice(2); 
+}
+</script>
+<footer>
+  <p>
+    <span>
+      <a href="http://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> | Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> | 
+    </span>
+    <span>
+      Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.
+    </span><br>
+    <span>Source: <a href="https://github.com/sabrinadchan/maps">https://github.com/sabrinadchan/maps</a> |
+    </span>
+    <span>Geospatial Data: <a href="https://data.cityofnewyork.us/City-Government/Election-Districts/h2n3-98hq">NYC Open Data</a>
+    </span> | 
+    <span>Election results: <a href="https://vote.nyc/">NYC BOE</a>
+    </span>
+  </p> 
+</footer>
+</body>
+</html>
