@@ -243,7 +243,7 @@ d3.csv(url + "&rand" + Math.floor(Math.random() * 1000) + "=1")
           .attr("class", d => d.class)
           .html(d => d.head);
       
-      var sorted = district.values.sort((a, b) => d3.descending(a.votes, b.votes));
+      var sorted = district.values.sort((a, b) => d3.descending(+a.votes, +b.votes));
       //" \uD83C\uDF39"
       tbody.selectAll("tr")
           .data(sorted)
@@ -252,7 +252,7 @@ d3.csv(url + "&rand" + Math.floor(Math.random() * 1000) + "=1")
       
       div.append("p")
           .attr("class", "total-results")
-          .html(sorted[0].total + " votes (" + (sorted[0].total / sorted[0].reg_dems * 100).toFixed(2) + "% turnout)<br />");// + sorted[0].reporting + " of " + sorted[0].precincts + " election districts reporting<br>");
+          .html(+sorted[0].total + " votes (" + (+sorted[0].total / +sorted[0].reg_dems * 100).toFixed(2) + "% turnout)<br />");// + sorted[0].reporting + " of " + sorted[0].precincts + " election districts reporting<br>");
 
       div.append("p")
           .html("<a href='full-results.html?district=" + district.key + "'>Election district results</a>");
