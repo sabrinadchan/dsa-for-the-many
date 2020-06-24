@@ -217,12 +217,21 @@ function assignWinnerColor(candidate) {
 var info_columns = ["ad_ed", "reg_dems", "absentee_requested", "total"],
     table_cols = [
       {head: "Candidate", class: "name-cell", html: r => r.candidate }, 
-      {head: "Vote", class: "num-cell", html: r => +r.votes }, 
-      {head: "Pct.", class: "num-cell", html: (r, i) => (+r.total ? +r.votes / +r.total * 100 : 0).toFixed(1)},
+      {head: "Vote", class: "num-cell", html: r => r.votes }, 
+      {head: "Pct.", class: "num-cell", html: (r, i) => (r.total ? r.votes / r.total * 100 : 0).toFixed(1)},
       {head: null, class: "num-cell", html: r => null },
     ]
 d3.csv(url + "&rand" + Math.floor(Math.random() * 1000) + "=1")
   .then(data => {
+    data.forEach(function(d) {
+      d.votes = +d.votes;
+      d.total = +d.total;
+      d.reporting = +d.reporting;
+      d.reg_dems = +d.reg_dems;
+      d.precincts = +d.precincts;
+      d.absentee_ballots = +d.absentee_ballots;
+    });
+
     var nested = d3.nest()
         .key(d => d.district)
         .entries(data);
@@ -243,16 +252,16 @@ d3.csv(url + "&rand" + Math.floor(Math.random() * 1000) + "=1")
           .attr("class", d => d.class)
           .html(d => d.head);
       
-      var sorted = district.values.sort((a, b) => d3.descending(+a.votes, +b.votes));
+      var sorted = district.values.sort((a, b) => d3.descending(a.votes, b.votes));
       //" \uD83C\uDF39"
       tbody.selectAll("tr")
           .data(sorted)
         .enter().append("tr")
-          .html((d, i) => "<td class='name-cell' style='background-color:" + assignWinnerColor(d.candidate) + "'><span>" + d.candidate + "</span>" + "<td class='num-cell'>" + d.votes.toLocaleString() + "</td><td class='num-cell'>" + (+d.total ? (+d.votes / +d.total * 100) : 0).toFixed(2) + "</td><td>" + (!i ? "%" : "") + "</td>");
+          .html((d, i) => "<td class='name-cell' style='background-color:" + assignWinnerColor(d.candidate) + "'><span>" + d.candidate + "</span>" + "<td class='num-cell'>" + d.votes.toLocaleString() + "</td><td class='num-cell'>" + (d.total ? (d.votes / d.total * 100) : 0).toFixed(2) + "</td><td>" + (!i ? "%" : "") + "</td>");
       
       div.append("p")
           .attr("class", "total-results")
-          .html(+sorted[0].total + " votes (" + (+sorted[0].total / +sorted[0].reg_dems * 100).toFixed(2) + "% turnout)<br />" + sorted[0].reporting + " of " + sorted[0].precincts + " election districts reporting<br>");
+          .html(sorted[0].total.toLocaleString() + " votes (" + (sorted[0].total / sorted[0].reg_dems * 100).toFixed(2) + "% turnout)<br />" + sorted[0].reporting.toLocaleString() + " of " + sorted[0].precincts + " election districts reporting<br>");
 
       div.append("p")
           .html("<a href='full-results.html?district=" + district.key + "'>Election district results</a>");
