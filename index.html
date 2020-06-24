@@ -145,10 +145,10 @@ footer span {
     <img id="nyc-dsa-logo" src="img/4_red_full.png" alt="logo" style="width:100px;height:100px" />
     <br>
     <p id="take-action">
-      <button class="action-button" title="See the full results" onclick="window.location.href='full-results.html';">Detailed Results</button>
-      <button class="action-button" title="Join DSA" onclick="window.location.href='https://dsausa.org/join';">Join DSA</button>
-      <button class="action-button" title="Make a recurring donation to the DSA For The Many multi-candidate committee" onclick="window.location.href='https://secure.actblue.com/donate/dsa-for-the-many?refcode=eday&recurring=1';">Donate to DSA For The Many</button>
-      <button class="action-button" title="Sign up for the NYC-DSA Racial Justice Working Group’s DefundNYPD campaign" onclick="window.location.href='https://defundnypd.com';">Join the #DefundNYPD Campaign</button>
+      <button class="action-button" title="Return to the main page" onclick="window.location.href='index.html';">Main Page</button>
+      <button class="action-button" title="Join DSA" onclick="window.open('https://dsausa.org/join','_blank');">Join DSA</button>
+      <button class="action-button" title="Make a recurring donation to the DSA For The Many multi-candidate committee" onclick="window.open('https://secure.actblue.com/donate/dsa-for-the-many?refcode=eday&recurring=1','_blank');">Donate to DSA For The Many</button>
+      <button class="action-button" title="Sign up for the NYC-DSA Racial Justice Working Group’s DefundNYPD campaign" onclick="window.open('https://defundnypd.com','_blank');">Join the #DefundNYPD Campaign</button>
     </p>
   </header>
   <h1>2020 NY Democratic Primary Election Results</h1>
@@ -161,8 +161,6 @@ var url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0uWtI7YuT_LrP7BsoKY
 var dsaCandidates = ["Tiffany Caban", "Alexandria Ocasio-Cortez", "Samelys Lopez", "Julia Salazar", "Jabari Brisport", "Zohran Kwame Mamdani", "Marcela Mitaynes", "Phara Souffrant Forrest",]
 
 var candidateCmap = {
-  "Tiffany Caban": {color: "#EC1F27", },
-  "Melinda Katz": {color: "#5CC7DD", },
   "Alexandria Ocasio-Cortez": {color: "#EC1F27", },
   "Michelle Caruso-Cabrera": {color: "#5CC7DD", },
   "Badrun N. Khan": {color: "#BA80BF", },
@@ -172,6 +170,11 @@ var candidateCmap = {
   "Reuben Diaz": {color: "#BA80BF", },
   "Michael A. Blake": {color: "#72D793", },
   "Melissa Mark-Viverito": {color: "#E6CD58", },
+  "Jamaal Bowman": {color: "#EC1F27", },
+  "Eliot L. Engel": {color: "#5CC7DD", },
+  "Andom Ghebreghiorgis": {color: "#BA80BF", },
+  "Christopher Fink": {color: "#72D793", },
+  "Sammy Ravelo": {color: "#E6CD58", },
   "Julia Salazar": {color: "#EC1F27", },
   "Andy J. Marte": {color: "#5CC7DD", },
   "Jabari Brisport": {color: "#EC1F27", },
@@ -190,6 +193,7 @@ var candidateCmap = {
 var districtNames = {
   "NY14": "U.S. House, NY-14",
   "NY15": "U.S. House, NY-15",
+  "NY16": "U.S. House, NY-16 (NYC Only)",
   "SD18": "NY State Senate, District 18",
   "SD25": "NY State Senate, District 25",
   "AD36": "NY State Assembly, District 36",
