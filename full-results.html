@@ -398,6 +398,7 @@ d3.json("nyc-aded.topojson")
 
     d3.csv(url + "&rand" + Math.floor(Math.random() * 1000) + "=1")
       .then(data => {
+        console.log(data)
         data.columns.forEach(d => { if (!info_columns.includes(d) && d != "") candidates.push(d) });
         data.forEach(d => results.set(d.ad_ed.replace("-", ""), { absentee_requested: d.absentee_requested, total_reg_dems: d.total_reg_dems, candidates: candidates.map(c => { return {race: c, votes: +d[c], pct: (+d.total ? +d[c] / +d.total * 100 : 0) }; }).sort((a,b) => b.votes - a.votes)}));
         draw(aded);
@@ -464,7 +465,7 @@ function draw(aded) {
       //.html((d, i) => "<td class='name-cell" + (!i ? " winner'" : "'") + " style='background-color:" + assignWinnerColor(d.key) + "'><span>" + d.key + "</span>" + (!i ? "<span class='win-symbol'> &#10003;</span>" : "") + "<td class='num-cell'>" + d.value.toLocaleString() + "</td><td class='num-cell'>" + (d.value / totalVotes * 100).toFixed(2) + "</td><td>" + (!i ? "%" : "") + "</td>")
 
   d3.select("#total-results")
-      .html(totalVotes.toLocaleString() + " votes (" + (totalVotes / totalRegistered * 100).toFixed(2) + "% turnout)<br />" + filteredADED.filter(d => results.get(d.properties.elect_dist).candidates[0].votes).length.toLocaleString() + " of " + filteredADED.length.toLocaleString() + " election districts reporting")
+      .html(totalVotes.toLocaleString() + " votes (" + (totalVotes / totalRegistered * 100).toFixed(2) + "% turnout)<br />"); //+ filteredADED.filter(d => results.get(d.properties.elect_dist).candidates[0].votes).length.toLocaleString() + " of " + filteredADED.length.toLocaleString() + " election districts reporting")
 
   // render precinct choropleth
   var adedPath = svg.selectAll("path")
