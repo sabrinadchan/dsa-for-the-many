@@ -87,10 +87,6 @@ td.name-cell, th.name-cell {
   min-width: 175px;
 }
 
-/* td.name-cell {
-  border: 1px solid black;
-} */
-
 td.num-cell, th.num-cell {
   text-align: right;
   padding-left: 10px;
@@ -102,8 +98,8 @@ td.num-cell, th.num-cell {
 }
 
 .vote-share-bar {
-  height:20px;
-  border-radius:3px;
+  height: 20px;
+  border-radius: 3px;
 }
 
 footer {
@@ -256,7 +252,7 @@ d3.csv(url + "&rand" + Math.floor(Math.random() * 1000) + "=1")
           <span>${d.candidate}</span>
         </td>
         <td>
-          <div class='vote-share-bar' style='background-color:${assignWinnerColor(d.candidate)};width:${votePercentage(d)}%;' />
+          <div class='vote-share-bar' style='background-color: ${assignWinnerColor(d.candidate)}; width: ${votePercentage(d)}%;' />
         </td>
         <td class='num-cell'>${d.votes.toLocaleString()}</td>
         <td class='num-cell'>${votePercentage(d)}</td>
