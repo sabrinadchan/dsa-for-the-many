@@ -14,6 +14,7 @@
 <meta name="twitter:image" content="img/dsa-for-the-many.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="4_red_full.png?v=1" type="image/png">
+<script src="js/main.js"></script>
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script src="https://d3js.org/topojson.v1.min.js"></script>
 <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
@@ -25,79 +26,10 @@
    integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
    crossorigin=""></script>
 <script src="https://stamen-maps.a.ssl.fastly.net/js/tile.stamen.js"></script>
+<link rel="stylesheet" href="css/main.css">
 <style type="text/css">
-html, body {
-  margin: 0 10%;
-  padding: 0px 0px;
-  width: 80%;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-header {
-  margin-top: 30px;
-  text-align: center;
-}
-
-h1 {
-  text-align: center;
-}
-
-p#take-action {
-  margin: 10px 0;
-}
-
-.action-button {
-  background-color: #EC1F27;
-  border: 1px solid black;
-  border-radius: 3px;
-  color: white;
-  padding: 10px;
-  margin: 2.5px 0px;
-  text-align: center;
-  text-decoration: none;
-  font-size: 14px;
-  display: inline-block;
-}
-
-.action-button:hover {
-  cursor: pointer;
-}
-
 .selection span {
   display: inline-block;
-}
-    
-#results {
-  font-size: 16px;
-  margin: 20px 0px;
-}
-
-td {
-  border-radius: 3px;
-}
-
-td.winner {
-  border: 2px solid black;
-}
-
-td.name-cell, th.name-cell {
-  text-align: left;
-  padding: 5px 45px 5px 5px;
-  min-width: 125px;
-}
-
-td.name-cell {
-  border: 1px solid black;
-}
-
-td.num-cell, th.num-cell {
-  text-align: right;
-  padding-left: 10px;
-}
-
-#total-results {
-  font-size: 10px;
-  margin: 3px;
 }
 
 #map {
@@ -137,7 +69,7 @@ td.num-cell, th.num-cell {
   font-size: 10px;
 }
 
-.caption td.name-cell, th.name-cell {
+.caption td.name-cell, .caption th.name-cell {
   padding: 2px 15px 2px 2px;
 }
 
@@ -148,23 +80,6 @@ td.num-cell, th.num-cell {
 
 .axis path, .axis line {
   display: none;
-}
-
-footer {
-  margin-top: 30px;
-  font-size: 10px;
-  text-align: center;
-}
-
-footer span {
-  display: inline-block;
-}
-
-@media screen and (max-width: 1200px) {
-  html, body {
-    margin: 0 5%;
-    width: 90%;
-  }
 }
 
 @media screen and (max-width: 720px) {
@@ -185,6 +100,10 @@ footer span {
   footer {
     margin-top: 10px;
     text-align: left;
+  }
+
+  th.vote-share-cell, td.vote-share-cell {
+    display: none;
   }
 }
 </style>
@@ -207,17 +126,7 @@ footer span {
       <span title="Show election results by candidate"><b>Candidate</b> <select class="dropdown" id="candidate-select"><option value="All">All Candidates</option></select></span>
     </p>
   </div>
-
   <div id="results">
-    <table id="results-table">
-      <thead>
-        <tr><th class="name-cell">Candidates</th><th class="num-cell">Votes</th><th class="num-cell">Pct</th></tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
-    <p id="total-results">
-    </p>
   </div>
   <div id="map">
   </div>
@@ -261,39 +170,6 @@ var races = [
     url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0uWtI7YuT_LrP7BsoKYEofYB43E5re4PtODcTUuYSm4ln88r7lUBuCCvSSaPNRs0hmsCVnlp8amy9/pub?gid=767205731&single=true&output=csv"
   },
 ]
-
-var dsaCandidates = ["Alexandria Ocasio-Cortez", "Samelys Lopez", "Jamaal Bowman", "Julia Salazar", "Jabari Brisport", "Zohran Kwame Mamdani", "Marcela Mitaynes", "Phara Souffrant Forrest",]
-
-var candidateCmap = {
-  "Alexandria Ocasio-Cortez": {color: "#EC1F27", },
-  "Michelle Caruso-Cabrera": {color: "#5CC7DD", },
-  "Badrun N. Khan": {color: "#BA80BF", },
-  "Samuel H. Sloan": {color: "#72D793", },
-  "Samelys L\u00F3pez": {color: "#EC1F27", },
-  "Ritchie Torres": {color: "#5CC7DD", },
-  "Rub\u00E9n D\u00EDaz": {color: "#BA80BF", },
-  "Michael A. Blake": {color: "#72D793", },
-  "Ydanis Rodriguez": {color: "#E6CD58", },
-  "Jamaal Bowman": {color: "#EC1F27", },
-  "Eliot L. Engel": {color: "#5CC7DD", },
-  "Andom Ghebreghiorgis": {color: "#BA80BF", },
-  "Christopher Fink": {color: "#72D793", },
-  "Sammy Ravelo": {color: "#E6CD58", },
-  "Julia Salazar": {color: "#EC1F27", },
-  "Andy J. Marte": {color: "#5CC7DD", },
-  "Jabari Brisport": {color: "#EC1F27", },
-  "Tremaine S. Wright": {color: "#5CC7DD", },
-  "Jason Salmon": {color: "#BA80BF", },
-  "Zohran Kwame Mamdani": {color: "#EC1F27", },
-  "Aravella Simotas": {color: "#5CC7DD", },
-  "Marcela Mitaynes": {color: "#EC1F27", },
-  "Felix W. Ortiz": {color: "#5CC7DD", },
-  "Genesis E. Aquino": {color: "#BA80BF"},
-  "Katherine P. Walsh": {color: "#72D793", },
-  "Phara Souffrant Forrest": {color: "#EC1F27", },
-  "Walter T. Mosley III": {color: "#5CC7DD", },
-}
-
 var raceSelect = d3.select("#race-select"),
     candidateSelect = d3.select("#candidate-select"); // populated after election chosen
 
@@ -328,7 +204,7 @@ caption.onAdd = function (map) {
 };
 
 caption.update = function (d) {
-  this._div.innerHTML = (d ? "<h4>" + parseADED(d.properties.elect_dist) + "</h4><table><thead><tr><th class='name-cell'>Candidates</th><th class='num-cell'>Votes</th><th class='num-cell'>Pct</th></tr></thead>" + results.get(d.properties.elect_dist).candidates.map((r,i) => "<tr><td class='name-cell' style='background-color:" + assignWinnerColor(r.race) + "'>" + r.race + "</td><td class='num-cell'>" + r.votes + "</td><td class='num-cell'>" + r.pct.toFixed(2) + "</td><td>" + (!i ? "%" : "") + "</td></tr>").join("") + "</table>" //"<span>(" + turnout.get(d.properties.elect_dist).turnoutPct + "% turnout)</span>"
+  this._div.innerHTML = (d ? "<h4>" + parseADED(d.properties.elect_dist) + "</h4><table><thead><tr><th class='name-cell'>Candidates</th><th class='num-cell'>Votes</th><th class='num-cell'>Pct</th></tr></thead>" + results.get(d.properties.elect_dist).candidates.map((r,i) => "<tr><td class='name-cell' style='background-color:" + assignWinnerColor(r.race) + "'>" + r.race + "</td><td class='num-cell'>" + r.votes + "</td><td class='num-cell'>" + r.pct + "</td><td>" + (!i ? "%" : "") + "</td></tr>").join("") + "</table>" //"<span>(" + turnout.get(d.properties.elect_dist).turnoutPct + "% turnout)</span>"
       : "Hover over a precinct");
 };
 
@@ -341,9 +217,6 @@ if (!L.Browser.touch) {
 } else {
   L.DomEvent.disableClickPropagation(captionDiv);
 }
-
-//var zoomHome = L.Control.zoomHome();
-//zoomHome.addTo(map);
 
 var legend = L.control({position: 'bottomleft'});
 
@@ -367,16 +240,10 @@ var winnerColor = d3.scaleOrdinal(
     pctColor = d3.scaleQuantile()
     .domain([0, 75]);
 
-function assignWinnerColor(candidate) {
-  //return dsaCandidates.includes(candidate) ? "#EC1F27" : winnerColor(candidate);
-  return (candidate in candidateCmap ? candidateCmap[candidate].color : "#76797E");
-}
-
 var url = new URL(window.location.href),
     district = url.searchParams.get("district");
 
 // load geospatial boundaries
-var info_columns = ["ad_ed", "total_reg_dems", "absentee_requested", "total"]
 d3.json("nyc-aded.topojson")
   .then(aded => {
     raceSelect.on("change", function() {
@@ -393,13 +260,19 @@ d3.json("nyc-aded.topojson")
     candidates = [];
     results = d3.map();
 
-    var raceDD = raceSelect.node();
+    var raceDD = raceSelect.node(),
         url = raceDD.options[raceDD.selectedIndex].getAttribute("url");
 
     d3.csv(url + "&rand" + Math.floor(Math.random() * 1000) + "=1")
       .then(data => {
         data.columns.forEach(d => { if (!info_columns.includes(d) && d != "") candidates.push(d) });
-        data.forEach(d => results.set(d.ad_ed.replace("-", ""), { absentee_requested: d.absentee_requested, total_reg_dems: d.total_reg_dems, candidates: candidates.map(c => { return {race: c, votes: +d[c], pct: (+d.total ? +d[c] / +d.total * 100 : 0) }; }).sort((a,b) => b.votes - a.votes)}));
+        data.forEach(d => {
+          results.set(d.ad_ed.replace("-", ""), {
+            absentee_requested: +d.absentee_requested,
+            total_reg_dems: +d.total_reg_dems,
+            candidates: candidates.map(c => { return {race: c, votes: +d[c], pct: percentage(+d[c], +d.total) }; }).sort((a,b) => b.votes - a.votes)
+          })
+        });
         draw(aded);
       });
     }
@@ -410,7 +283,6 @@ d3.json("nyc-aded.topojson")
     }
   });
 
-
 // draw svg layer + add caption
 function draw(aded) {
   var transform = d3.geoTransform({point: projectPoint}),
@@ -419,8 +291,7 @@ function draw(aded) {
   // clear old path and values
   d3.selectAll(".precinct-path").remove();
   d3.selectAll(".candidate-option").remove();
-  d3.selectAll("#results-table tbody tr").remove();
-  d3.select("#total-results").html("");
+  d3.select("#results").html("");
   d3.select("div.legend").remove();
   d3.select(".boundary").remove();
   caption.update(null);
@@ -430,41 +301,36 @@ function draw(aded) {
       filteredADED = topojson.feature(aded, aded.objects.aded).features.filter(d => useADED.includes(d.properties.elect_dist));
 
   // calculate overall results for chosen election
-  var flat = [].concat.apply([], results.values().map(x => x.candidates));
-  var summary = d3.nest()
-    .key(d => d.race)
-    .rollup(v => d3.sum(v, d => d.votes))
-    .object(flat);
+  var flat = [].concat.apply([], results.values().map(x => x.candidates)),
+      summary = d3.nest()
+        .key(d => d.race)
+        .rollup(v => d3.sum(v, d => d.votes))
+        .entries(flat)
+        .map(d => {return {candidate: d.key, votes: d.value}})
+        .sort((a, b) => d3.descending(a.votes, b.votes)),
+      totalVotes = d3.sum(summary, d => d.votes),
+      totalRegistered = d3.sum(d3.values(results), d => d.total_reg_dems);
 
-  var sortedSummary = d3.entries(summary).sort((a, b) => d3.descending(a.value, b.value)),
-      candidates2 = sortedSummary.map(d => d.key);
-
-  // set categorical colors based on candidates
-  // only uses top 6 candidates
-  winnerColor.domain(candidates2.filter(d => !dsaCandidates.includes(d) && d != "Write In").slice(0, 4))
+  summary.forEach(d => d.total = totalVotes);
 
   // populate candidate drop down
   candidateSelect.selectAll("option.candidate-option")
-    .data(candidates2)
-  .enter().append("option")
-    .attr("class", "candidate-option")
-    .attr("value", d => d)
-    .text(d => d);
+      .data(summary.map(d => d.candidate))
+    .enter().append("option")
+      .attr("class", "candidate-option")
+      .attr("value", d => d)
+      .text(d => d);
 
-  candidateSelect.node().disabled = (candidates2.length < 2);
+  candidateSelect.node().disabled = (candidates.length < 2);
 
-  var totalVotes = d3.sum(d3.values(summary)),
-      totalRegistered = d3.sum(d3.values(results), d => d.total_reg_dems);
+  // update results table and caption
+  var div = d3.select("#results");
+  buildHeader(div, raceSelect.node().value)
+  buildResultsTable(div, summary);
 
-  // update results table + caption
-  d3.select("#results-table tbody").selectAll("tr")
-      .data(sortedSummary)
-    .enter().append("tr")
-      .html((d, i) => "<td class='name-cell' style='background-color:" + assignWinnerColor(d.key) + "'><span>" + d.key + "</span>" + "<td class='num-cell'>" + d.value.toLocaleString() + "</td><td class='num-cell'>" + (totalVotes ? (d.value / totalVotes * 100) : 0).toFixed(2) + "</td><td>" + (!i ? "%" : "") + "</td>");
-      //.html((d, i) => "<td class='name-cell" + (!i ? " winner'" : "'") + " style='background-color:" + assignWinnerColor(d.key) + "'><span>" + d.key + "</span>" + (!i ? "<span class='win-symbol'> &#10003;</span>" : "") + "<td class='num-cell'>" + d.value.toLocaleString() + "</td><td class='num-cell'>" + (d.value / totalVotes * 100).toFixed(2) + "</td><td>" + (!i ? "%" : "") + "</td>")
-
-  d3.select("#total-results")
-      .html(totalVotes.toLocaleString() + " votes (" + (totalVotes / totalRegistered * 100).toFixed(2) + "% turnout)<br />" + filteredADED.filter(d => results.get(d.properties.elect_dist).candidates[0].votes).length.toLocaleString() + " of " + filteredADED.length.toLocaleString() + " election districts reporting");
+  div.append("p")
+      .attr("class", "total-results")
+      .html(totalVotes.toLocaleString() + " votes (" + percentage(totalVotes, totalRegistered) + "% turnout)<br />" + filteredADED.filter(d => results.get(d.properties.elect_dist).candidates[0].votes).length.toLocaleString() + " of " + filteredADED.length.toLocaleString() + " election districts partially reporting");
 
   // render precinct choropleth
   var adedPath = svg.selectAll("path")
@@ -495,6 +361,7 @@ function draw(aded) {
         d3.select(this).lower();
       });
 
+  // add district boundary
   var boundaryPath = svg.append("path")
       .datum(topojson.merge(aded, aded.objects.aded.geometries.filter(d => useADED.includes(d.properties.elect_dist))))
       .attr("class", "boundary")
@@ -506,7 +373,6 @@ function draw(aded) {
   var bbox = d3.geoBounds({type: "FeatureCollection", "features": filteredADED});
   bbox.forEach(b => b.reverse());
   map.flyToBounds(bbox);
-  //zoomHome.setHomeBounds(bbox);
 
   map.on("moveend", reset);
   reset();
@@ -542,7 +408,6 @@ function updateColors(candidate) {
     pctColor.range([...Array(5).keys()].map(x => c(x)));
 
     d3.selectAll(".precinct-path")
-        //.attr("fill", d => pctColor(results.get(d.properties.elect_dist).find(x => x.race == candidate).pct));
         .attr("fill", d => { var dist = results.get(d.properties.elect_dist).candidates; return dist[0].votes ? pctColor(dist.find(x => x.race == candidate).pct) : "white" });
   }
 }
