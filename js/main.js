@@ -60,7 +60,7 @@ const isWinner = c => (c in candidateConfig && "winner" in candidateConfig[c]);
 //&#127801;
 const rowHTML = (d, i) => `
     <td class='name-cell ${(isWinner(d.candidate) ? "winner" : "")}' ${isWinner(d.candidate) ? "style='background-color:" + assignWinnerColor(d.candidate) + ";'" : ""}>
-      <div style='background-color: ${assignWinnerColor(d.candidate)}; width: 5px; display:inline; padding:5px 0px; border-radius:3px;'>&nbsp;</div>
+      <div style='background-color: ${assignWinnerColor(d.candidate)}; width: 5px; display:inline; padding:4px 0px; border-radius:3px;'>&nbsp;</div>
       <span class='candidate-name'>${d.candidate}</span>
       ${(isWinner(d.candidate) ? "<span class='win-symbol'>&#10003;</span>" : "")}
     </td>
@@ -73,7 +73,7 @@ const rowHTML = (d, i) => `
 
 function buildHeader(div, district) {
   div.append("h2").html(`
-    <img src='img/${district}.png?1' style='height:50px;width:50px;margin-right:5px;vertical-align: text-bottom;'/>
+    <img src='img/${district}.png' style='height:50px;width:50px;vertical-align: text-bottom;'/>
     ${districtNames[district]}
   `);
   div.append("hr");

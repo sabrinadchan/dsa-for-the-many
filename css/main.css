@@ -101,3 +101,33 @@ footer span {
     width: 90%;
   }
 }
+
+@media screen and (max-width: 720px) {
+  html, body {
+    margin: 0 0;
+    width: 100%;
+  }
+
+  h2 {
+    font-size: 20px;
+    padding-top: 1em;
+    margin-bottom: 0;
+  }
+
+  #results {
+    font-size: 14px;
+  }
+
+  td.name-cell, th.name-cell {
+    padding: 5px 25px 4px 0px;
+  }
+
+  th.vote-share-cell, td.vote-share-cell {
+    display: none;
+  }
+
+  footer {
+    margin-top: 10px;
+    text-align: left;
+  }
+}
