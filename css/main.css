@@ -79,7 +79,6 @@ td.vote-share-cell, th.vote-share-cell {
   border-radius: 3px;
 }
 
-
 .total-results {
   font-size: 10px;
   margin: 3px;
@@ -116,6 +115,10 @@ footer span {
 
   #results {
     font-size: 14px;
+  }
+
+  .total-results {
+    font-size: 10px;
   }
 
   td.name-cell, th.name-cell {
