@@ -1,0 +1,103 @@
+html, body {
+  margin: 0 10%;
+  padding: 0px 0px;
+  width: 80%;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+header {
+  margin-top: 30px;
+  text-align: center;
+}
+
+h1 {
+  text-align: center;
+}
+
+h2 {
+  font-size: 22px;
+  padding-top: 1em;
+  margin-bottom: 0;
+}
+
+p#take-action {
+  margin: 10px 0;
+}
+
+.action-button {
+  background-color: #EC1F27;
+  border: 1px solid black;
+  border-radius: 3px;
+  color: white;
+  padding: 10px;
+  margin: 2.5px 0px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 14px;
+  display: inline-block;
+}
+
+.action-button:hover {
+  cursor: pointer;
+}
+
+#results {
+  font-size: 16px;
+  margin: 20px 0px;
+}
+
+td {
+  border-radius: 3px;
+}
+
+.win-symbol {
+  line-height: 1em;
+}
+
+td.winner {
+  border: 2px solid black;
+}
+
+td.name-cell, th.name-cell {
+  text-align: left;
+  padding: 5px 45px 4px 0px;
+  min-width: 125px;
+}
+
+td.num-cell, th.num-cell {
+  text-align: right;
+  padding-left: 10px;
+}
+
+td.vote-share-cell, th.vote-share-cell {
+  padding-left: 10px;
+  min-width: 175px;
+}
+
+.vote-share-bar {
+  height: 20px;
+  border-radius: 3px;
+}
+
+
+.total-results {
+  font-size: 10px;
+  margin: 3px;
+}
+
+footer {
+  margin-top: 30px;
+  font-size: 10px;
+  text-align: center;
+}
+
+footer span {
+  display: inline-block;
+}
+
+@media screen and (max-width: 1200px) {
+  html, body {
+    margin: 0 5%;
+    width: 90%;
+  }
+}
