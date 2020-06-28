@@ -93,6 +93,7 @@ d3.csv(url + "&rand" + Math.floor(Math.random() * 1000) + "=1")
           .html(sorted[0].total.toLocaleString() + " votes (" + percentage(sorted[0].total, sorted[0].reg_dems) + "% turnout)<br />" + sorted[0].reporting.toLocaleString() + " of " + sorted[0].precincts + " election districts partially reporting<br>");
 
       div.append("p")
+          .attr("class", "results-p")
           .html("<a href='full-results.html?district=" + district.key + "'>Election district results</a>");
     });
   });

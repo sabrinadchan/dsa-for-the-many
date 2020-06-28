@@ -79,6 +79,10 @@ td.vote-share-cell, th.vote-share-cell {
   border-radius: 3px;
 }
 
+.results-p {
+  font-size: 16px;
+}
+
 .total-results {
   font-size: 10px;
   margin: 3px;
@@ -113,12 +117,12 @@ footer span {
     margin-bottom: 0;
   }
 
-  #results {
+  .results-table {
     font-size: 14px;
   }
 
-  .total-results {
-    font-size: 10px;
+  .results-p {
+    font-size: 14px;
   }
 
   td.name-cell, th.name-cell {
