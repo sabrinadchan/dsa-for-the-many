@@ -77,19 +77,20 @@ td {
   border-radius: 3px;
 }
 
-td.winner {
-  border: 2px solid black;
-}
-
 td.name-cell, th.name-cell {
   text-align: left;
-  padding: 5px 45px 5px 5px;
+  padding: 5px 45px 4px 0px;
   min-width: 175px;
 }
 
 td.num-cell, th.num-cell {
   text-align: right;
   padding-left: 10px;
+}
+
+td.vote-share-cell, th.vote-share-cell {
+  padding-left: 10px;
+  min-width: 175px;
 }
 
 .total-results {
@@ -128,6 +129,10 @@ footer span {
   footer {
     margin-top: 10px;
     text-align: left;
+  }
+
+  th.vote-share-cell, td.vote-share-cell {
+    display: none;
   }
 }
 </style>
@@ -209,10 +214,10 @@ function assignWinnerColor(candidate) {
 var info_columns = ["ad_ed", "reg_dems", "absentee_requested", "total"],
     table_cols = [
       {head: "Candidate", class: "name-cell", html: r => r.candidate }, 
-      {head: "", class: "name-cell", html: r => r.candidate},
       {head: "Vote", class: "num-cell", html: r => r.votes }, 
       {head: "Pct.", class: "num-cell", html: (r, i) => (r.total ? r.votes / r.total * 100 : 0).toFixed(1)},
       {head: null, class: "num-cell", html: r => null },
+      {head: null, class: "vote-share-cell", html: r => null },
     ]
 d3.csv(url + "&rand" + Math.floor(Math.random() * 1000) + "=1")
   .then(data => {
@@ -248,15 +253,16 @@ d3.csv(url + "&rand" + Math.floor(Math.random() * 1000) + "=1")
       const votePercentage = d => (d.total ? (d.votes / d.total * 100) : 0).toFixed(2);
 
       const rowHTML = (d, i) => `
-        <td class='name-cell'>
+        <td class='name-cell ${(!i ? "winner" : "")}'>
+          <div style='background-color: ${assignWinnerColor(d.candidate)}; width: 5px; display:inline; padding:5px 0px;'>&nbsp;</div>
           <span>${d.candidate}</span>
-        </td>
-        <td>
-          <div class='vote-share-bar' style='background-color: ${assignWinnerColor(d.candidate)}; width: ${votePercentage(d)}%;' />
         </td>
         <td class='num-cell'>${d.votes.toLocaleString()}</td>
         <td class='num-cell'>${votePercentage(d)}</td>
-        <td>${(!i ? "%" : "")}</td>`;
+        <td>${(!i ? "%" : "")}</td>
+        <td class='vote-share-cell'>
+          <div class='vote-share-bar' style='background-color: ${assignWinnerColor(d.candidate)}; width: ${votePercentage(d)}%; height:5px' />
+        </td>`;
 
       var sorted = district.values.sort((a, b) => d3.descending(a.votes, b.votes));
       //" \uD83C\uDF39"
