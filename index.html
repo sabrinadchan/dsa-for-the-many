@@ -64,9 +64,9 @@ td.name-cell, th.name-cell {
   </div>
 <script type="text/javascript">
 // define dropdown lists and their options
-const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0uWtI7YuT_LrP7BsoKYEofYB43E5re4PtODcTUuYSm4ln88r7lUBuCCvSSaPNRs0hmsCVnlp8amy9/pub?gid=256126804&single=true&output=csv"
+const file = "data/summary.tsv"
 
-d3.csv(url + "&rand" + Math.floor(Math.random() * 1000) + "=1")
+d3.tsv(file)
   .then(data => {
     data.forEach(function(d) {
       d.votes = +d.votes;

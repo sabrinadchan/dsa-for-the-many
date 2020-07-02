@@ -47,8 +47,6 @@ const table_cols = [
   {head: "", class: "vote-share-cell", html: r => null },
 ]
 
-const info_columns = ["ad_ed", "total_reg_dems", "absentee_requested", "total"]
-
 // colors chosen with http://tristen.ca/hcl-picker/
 // define color scales
 const percentage = (n, d) => (d ? (n / d * 100) : 0).toFixed(2);

@@ -139,35 +139,31 @@ var races = [
   {
     district: "NY14",
     race: "US Congress NY-14 (Ocasio-Cortez)",
-    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0uWtI7YuT_LrP7BsoKYEofYB43E5re4PtODcTUuYSm4ln88r7lUBuCCvSSaPNRs0hmsCVnlp8amy9/pub?gid=2030118375&single=true&output=csv"
+    file: "Representative in Congress - District 14.tsv"
   },{
     district: "NY15",
     race: "US Congress NY-15 (L\u00F3pez)",
-    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0uWtI7YuT_LrP7BsoKYEofYB43E5re4PtODcTUuYSm4ln88r7lUBuCCvSSaPNRs0hmsCVnlp8amy9/pub?gid=2065613462&single=true&output=csv"
-  },/*{
-    district: "NY16",
-    race: "US Congress NY-15 (Bowman) - NYC Only",
-    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0uWtI7YuT_LrP7BsoKYEofYB43E5re4PtODcTUuYSm4ln88r7lUBuCCvSSaPNRs0hmsCVnlp8amy9/pub?gid=540398771&single=true&output=csv"
-  },*/{
+    file: "Representative in Congress - District 15.tsv"
+  },{
     district: "SD18",
     race: "SD-18 (Salazar)",
-    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0uWtI7YuT_LrP7BsoKYEofYB43E5re4PtODcTUuYSm4ln88r7lUBuCCvSSaPNRs0hmsCVnlp8amy9/pub?gid=1095710536&single=true&output=csv"
+    file: "State Senator - District 18.tsv"
   },{
     district: "SD25",
     race: "SD-25 (Brisport)",
-    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0uWtI7YuT_LrP7BsoKYEofYB43E5re4PtODcTUuYSm4ln88r7lUBuCCvSSaPNRs0hmsCVnlp8amy9/pub?gid=1784162904&single=true&output=csv"
+    file: "State Senator - District 25.tsv"
   },{
     district: "AD36",
     race: "AD-36 (Mamdani)",
-    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0uWtI7YuT_LrP7BsoKYEofYB43E5re4PtODcTUuYSm4ln88r7lUBuCCvSSaPNRs0hmsCVnlp8amy9/pub?gid=192661538&single=true&output=csv"
+    file: "Member of the Assembly - District 36.tsv"
   },{
     district: "AD51",
     race: "AD-51 (Mitaynes)",
-    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0uWtI7YuT_LrP7BsoKYEofYB43E5re4PtODcTUuYSm4ln88r7lUBuCCvSSaPNRs0hmsCVnlp8amy9/pub?gid=414477029&single=true&output=csv"
+    file: "Member of the Assembly - District 51.tsv"
   },{
     district: "AD57",
     race: "AD-57 (Souffrant Forrest)",
-    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0uWtI7YuT_LrP7BsoKYEofYB43E5re4PtODcTUuYSm4ln88r7lUBuCCvSSaPNRs0hmsCVnlp8amy9/pub?gid=767205731&single=true&output=csv"
+    file: "Member of the Assembly - District 57.tsv"
   },
 ]
 var raceSelect = d3.select("#race-select"),
@@ -177,7 +173,7 @@ raceSelect.selectAll("option.race-option")
     .data(races)
   .enter().append("option")
     .attr("class", "race-option")
-    .attr("url", d => d.url)
+    .attr("file", d => d.file)
     .attr("value", d => d.district)
     .text(d => d.race);
 
@@ -261,16 +257,21 @@ d3.json("nyc-aded.topojson")
     results = d3.map();
 
     var raceDD = raceSelect.node(),
-        url = raceDD.options[raceDD.selectedIndex].getAttribute("url");
+        file = raceDD.options[raceDD.selectedIndex].getAttribute("file");
 
-    d3.csv(url + "&rand" + Math.floor(Math.random() * 1000) + "=1")
+    d3.tsv("data/" + file +"?1")
       .then(data => {
-        data.columns.forEach(d => { if (!info_columns.includes(d) && d != "") candidates.push(d) });
+        data.columns.forEach(d => {
+          if (/^candidate\|/.test(d)) {
+            var c = d.split("|");
+            candidates.push(c[1]);
+          }
+        })
         data.forEach(d => {
           results.set(d.ad_ed.replace("-", ""), {
             absentee_requested: +d.absentee_requested,
             total_reg_dems: +d.total_reg_dems,
-            candidates: candidates.map(c => { return {race: c, votes: +d[c], pct: percentage(+d[c], +d.total) }; }).sort((a,b) => b.votes - a.votes)
+            candidates: candidates.map(c => { return {race: c, votes: +d["candidate|"+c], pct: percentage(+d["candidate|"+c], +d.total) }; }).sort((a,b) => b.votes - a.votes)
           })
         });
         draw(aded);
