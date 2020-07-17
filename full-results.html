@@ -70,12 +70,19 @@
 }
 
 .caption td.name-cell, .caption th.name-cell {
-  padding: 2px 15px 2px 2px;
+  padding: 2px 5px 2px 5px;
+  min-width: 125px;
+}
+
+.caption td.num-cell, .caption th.num-cell {
+  padding-left: 2px;
+  min-width: 2em;
 }
 
 .svg-legend {
   width: 160px;
   height: 40px;
+  padding: 2px 0px;
 }
 
 .axis path, .axis line {
@@ -95,6 +102,11 @@
   .caption {
     overflow-y: auto;
     max-height: 150px;
+  }
+
+  .caption td.name-cell, .caption th.name-cell {
+    padding: 0px 5px 0px 2px;
+    min-width: 75px;
   }
 
   footer {
@@ -200,8 +212,30 @@ caption.onAdd = function (map) {
 };
 
 caption.update = function (d) {
-  this._div.innerHTML = (d ? "<h4>" + parseADED(d.properties.elect_dist) + "</h4><table><thead><tr><th class='name-cell'>Candidates</th><th class='num-cell'>In Person</th><th class='num-cell'>Pct</th></tr></thead>" + results.get(d.properties.elect_dist).candidates.map((r,i) => "<tr><td class='name-cell' style='background-color:" + assignWinnerColor(r.race) + "'>" + r.race + "</td><td class='num-cell'>" + r.votes + "</td><td class='num-cell'>" + r.pct + "</td><td>" + (!i ? "%" : "") + "</td></tr>").join("") + "</table>" //"<span>(" + turnout.get(d.properties.elect_dist).turnoutPct + "% turnout)</span>"
-      : "Hover over a precinct");
+  this._div.innerHTML = (d ? `
+    <h4>${parseADED(d.properties.elect_dist)}</h4>
+    <table>
+    <thead>
+      <tr>
+        <th class='name-cell'>Candidates</th>
+        <th class='num-cell'>EDay</th>
+        <th class='num-cell'>Abs</th>
+        <th class='num-cell'>Tot</th>
+        <th class='num-cell'>Pct</th>
+      </tr>
+    </thead>`
+    + results.get(d.properties.elect_dist).candidates.map((r,i) => `
+        <tr>
+          <td class='name-cell' style='background-color:${assignWinnerColor(r.race)}'>${r.race}</td>
+          <td class='num-cell'>${r.inPersonVotes}</td>
+          <td class='num-cell'>${r.absenteeVotes}</td>
+          <td class='num-cell'>${r.votes}</td>
+          <td class='num-cell'>${r.pct}</td>
+          <td>${(!i ? "%" : "")}</td>
+        </tr>
+      `).join("")
+    + "</table>"
+  : "Hover over a precinct");
 };
 
 caption.addTo(map);
