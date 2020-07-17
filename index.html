@@ -27,10 +27,6 @@
    crossorigin=""></script>
 <link rel="stylesheet" href="css/main.css">
 <style type="text/css">
-td.name-cell, th.name-cell {
-  min-width: 175px;
-}
-
 @media screen and (max-width: 720px) {
   html, body {
     margin: 0 0;
@@ -69,7 +65,9 @@ const file = "data/summary.tsv"
 d3.tsv(file)
   .then(data => {
     data.forEach(function(d) {
-      d.votes = +d.votes;
+      d.inPersonVotes = +d.inPersonVotes;
+      d.absenteeVotes = +d.absenteeVotes || 0;
+      d.votes = +d.votes || +d.inPersonVotes;
       d.total = +d.total;
       d.reporting = +d.reporting;
       d.reg_dems = +d.reg_dems;

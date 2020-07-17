@@ -200,7 +200,7 @@ caption.onAdd = function (map) {
 };
 
 caption.update = function (d) {
-  this._div.innerHTML = (d ? "<h4>" + parseADED(d.properties.elect_dist) + "</h4><table><thead><tr><th class='name-cell'>Candidates</th><th class='num-cell'>Votes</th><th class='num-cell'>Pct</th></tr></thead>" + results.get(d.properties.elect_dist).candidates.map((r,i) => "<tr><td class='name-cell' style='background-color:" + assignWinnerColor(r.race) + "'>" + r.race + "</td><td class='num-cell'>" + r.votes + "</td><td class='num-cell'>" + r.pct + "</td><td>" + (!i ? "%" : "") + "</td></tr>").join("") + "</table>" //"<span>(" + turnout.get(d.properties.elect_dist).turnoutPct + "% turnout)</span>"
+  this._div.innerHTML = (d ? "<h4>" + parseADED(d.properties.elect_dist) + "</h4><table><thead><tr><th class='name-cell'>Candidates</th><th class='num-cell'>In Person</th><th class='num-cell'>Pct</th></tr></thead>" + results.get(d.properties.elect_dist).candidates.map((r,i) => "<tr><td class='name-cell' style='background-color:" + assignWinnerColor(r.race) + "'>" + r.race + "</td><td class='num-cell'>" + r.votes + "</td><td class='num-cell'>" + r.pct + "</td><td>" + (!i ? "%" : "") + "</td></tr>").join("") + "</table>" //"<span>(" + turnout.get(d.properties.elect_dist).turnoutPct + "% turnout)</span>"
       : "Hover over a precinct");
 };
 
@@ -271,7 +271,8 @@ d3.json("nyc-aded.topojson")
           results.set(d.ad_ed.replace("-", ""), {
             absentee_requested: +d.absentee_requested,
             total_reg_dems: +d.total_reg_dems,
-            candidates: candidates.map(c => { return {race: c, votes: +d["candidate|"+c], pct: percentage(+d["candidate|"+c], +d.total) }; }).sort((a,b) => b.votes - a.votes)
+            reporting: parseFloat(d.reporting),
+            candidates: candidates.map(c => { return {race: c, inPersonVotes: +d["candidate|"+c], absenteeVotes: +d["absentee|" + c] || 0, votes: +d["candidate|"+c] + (+d["absentee|" + c] || 0), pct: percentage(+d["candidate|"+c] + (+d["absentee|" + c] || 0), +d.total + (+d.totalAbsentee || 0)) }; }).sort((a,b) => b.votes - a.votes)
           })
         });
         draw(aded);
@@ -305,14 +306,25 @@ function draw(aded) {
   var flat = [].concat.apply([], results.values().map(x => x.candidates)),
       summary = d3.nest()
         .key(d => d.race)
-        .rollup(v => d3.sum(v, d => d.votes))
+        .rollup(v => { return {
+          votes: d3.sum(v, d => d.votes),
+          inPersonVotes: d3.sum(v, d => d.inPersonVotes),
+          absenteeVotes: d3.sum(v, d => d.absenteeVotes)
+        }; })
         .entries(flat)
-        .map(d => {return {candidate: d.key, votes: d.value}})
+        .map(d => { return {
+          candidate: d.key,
+          votes: d.value.votes,
+          inPersonVotes: d.value.inPersonVotes,
+          absenteeVotes: d.value.absenteeVotes
+        }; })
         .sort((a, b) => d3.descending(a.votes, b.votes)),
       totalVotes = d3.sum(summary, d => d.votes),
       totalRegistered = d3.sum(d3.values(results), d => d.total_reg_dems);
 
-  summary.forEach(d => d.total = totalVotes);
+  summary.forEach(d => {
+    d.total = totalVotes;
+  });
 
   // populate candidate drop down
   candidateSelect.selectAll("option.candidate-option")
@@ -329,9 +341,12 @@ function draw(aded) {
   buildHeader(div, raceSelect.node().value)
   buildResultsTable(div, summary);
 
+  var pctReporting = results.entries().filter(d => d.value.reporting > 0),
+      partiallyReporting = pctReporting.some(d => d.value.reporting < 99);
+
   div.append("p")
       .attr("class", "total-results")
-      .html(totalVotes.toLocaleString() + " votes (" + percentage(totalVotes, totalRegistered) + "% turnout)<br />" + filteredADED.filter(d => results.get(d.properties.elect_dist).candidates[0].votes).length.toLocaleString() + " of " + filteredADED.length.toLocaleString() + " election districts partially reporting");
+      .html(totalVotes.toLocaleString() + " votes (" + percentage(totalVotes, totalRegistered) + "% turnout)<br />" + pctReporting.length.toLocaleString() + " of " + results.entries().length.toLocaleString() + " election districts " + (partiallyReporting ?  "partially " : "") + "reporting");
 
   // render precinct choropleth
   var adedPath = svg.selectAll("path")
@@ -340,7 +355,7 @@ function draw(aded) {
       .attr("class", "precinct-path")
       .attr("id", d => "aded" + d.properties.elect_dist)
       .attr("fill", d => { var winner = results.get(d.properties.elect_dist).candidates[0]; return winner.votes ? assignWinnerColor(winner.race) : "white" })
-        .on("mouseover", function(d) {
+      .on("mouseover", function(d) {
         d3.select(this).classed("active", true);
         d3.select(this).raise();
         caption.update(d);      

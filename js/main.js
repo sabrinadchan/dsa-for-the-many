@@ -20,7 +20,7 @@ const candidateConfig = {
   "Jason Salmon": {color: "#BA80BF", },
   "Zohran Kwame Mamdani": {color: "#EC1F27", },
   "Aravella Simotas": {color: "#5CC7DD", },
-  "Marcela Mitaynes": {color: "#EC1F27", },
+  "Marcela Mitaynes": {color: "#EC1F27", winner: true},
   "Felix W. Ortiz": {color: "#5CC7DD", },
   "Genesis E. Aquino": {color: "#BA80BF"},
   "Katherine P. Walsh": {color: "#72D793", },
@@ -41,7 +41,9 @@ const districtNames = {
 
 const table_cols = [
   {head: "Candidate", class: "name-cell", html: r => r.candidate }, 
-  {head: "Vote", class: "num-cell", html: r => r.votes }, 
+  {head: "In Person", class: "num-cell", html: r => r.votes }, 
+  {head: "Absentee", class: "num-cell", html: r => r.votes }, 
+  {head: "Total", class: "num-cell", html: r => r.votes }, 
   {head: "Pct", class: "num-cell", html: (r, i) => percentage(d.votes, d.total)},
   {head: "", class: "num-cell", html: r => null },
   {head: "", class: "vote-share-cell", html: r => null },
@@ -58,10 +60,18 @@ const isWinner = c => (c in candidateConfig && "winner" in candidateConfig[c]);
 //&#127801;
 const rowHTML = (d, i) => `
     <td class='name-cell ${(isWinner(d.candidate) ? "winner" : "")}' ${isWinner(d.candidate) ? "style='background-color:" + assignWinnerColor(d.candidate) + ";'" : ""}>
-      <div style='background-color: ${assignWinnerColor(d.candidate)}; width: 5px; display:inline; padding:4px 0px; border-radius:3px;'>&nbsp;</div>
-      <span class='candidate-name'>${d.candidate}</span>
-      ${(isWinner(d.candidate) ? "<span class='win-symbol'>&#10003;</span>" : "")}
+      <table style='min-height:2em; border-collapse: collapse;'>
+        <tr>
+          <td style='background-color:${assignWinnerColor(d.candidate)}; width: 5px; padding:4px 0px; border-radius:3px;'>
+          </td>
+          <td style='padding-left:3px'>
+            <span class='candidate-name'>${d.candidate} ${(isWinner(d.candidate) ? "<span class='win-symbol'>&#10003;</span>" : "")}</span>
+          </td>
+       </tr>
+     </table>
     </td>
+    <td class='num-cell'>${d.inPersonVotes.toLocaleString()}</td>
+    <td class='num-cell'>${d.absenteeVotes.toLocaleString()}</td>
     <td class='num-cell'>${d.votes.toLocaleString()}</td>
     <td class='num-cell'>${percentage(d.votes, d.total)}</td>
     <td>${(!i ? "%" : "")}</td>
