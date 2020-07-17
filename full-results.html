@@ -13,7 +13,7 @@
 <meta name="twitter:description" content="Follow the 2020 New York Primary results live with NYC-DSA.">
 <meta name="twitter:image" content="img/dsa-for-the-many.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="4_red_full.png?v=1" type="image/png">
+<link rel="icon" href="img/4_red_full.png" type="image/png">
 <script src="js/main.js"></script>
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script src="https://d3js.org/topojson.v1.min.js"></script>
@@ -380,7 +380,12 @@ function draw(aded) {
 
   div.append("p")
       .attr("class", "total-results")
-      .html(totalVotes.toLocaleString() + " votes (" + percentage(totalVotes, totalRegistered) + "% turnout)<br />" + pctReporting.length.toLocaleString() + " of " + results.entries().length.toLocaleString() + " election districts " + (partiallyReporting ?  "partially " : "") + "reporting");
+      .html(`
+        ${totalVotes.toLocaleString()} votes (${percentage(totalVotes, totalRegistered)}% turnout)<br>
+        ${pctReporting.length.toLocaleString()} of ${results.entries().length.toLocaleString()} election districts ${(partiallyReporting ?  "partially " : "")}reporting<br>
+        <br>
+        Last updated on ${districtConfig[raceSelect.node().value].lastUpdated}
+      `);
 
   // render precinct choropleth
   var adedPath = svg.selectAll("path")

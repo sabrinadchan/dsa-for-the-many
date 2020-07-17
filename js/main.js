@@ -28,15 +28,15 @@ const candidateConfig = {
   "Walter T. Mosley III": {color: "#5CC7DD", },
 }
 
-const districtNames = {
-  "NY14": "U.S. House, NY-14",
-  "NY15": "U.S. House, NY-15",
-  //"NY16": "U.S. House, NY-16 (NYC Only)",
-  "SD18": "NY State Senate, District 18",
-  "SD25": "NY State Senate, District 25",
-  "AD36": "NY State Assembly, District 36",
-  "AD51": "NY State Assembly, District 51",
-  "AD57": "NY State Assembly, District 57",
+var districtConfig = {
+  "NY14": { displayName: "U.S. House, NY-14", lastUpdated: "2020-06-24"},
+  "NY15": { displayName: "U.S. House, NY-15", lastUpdated: "2020-06-24"},
+  //"NY16": { displayName: "U.S. House, NY-16 (NYC Only)", lastUpdated: "2020-06-24"},
+  "SD18": { displayName: "NY State Senate, District 18", lastUpdated: "2020-06-24"},
+  "SD25": { displayName: "NY State Senate, District 25", lastUpdated: "2020-06-24"},
+  "AD36": { displayName: "NY State Assembly, District 36", lastUpdated: "2020-06-24"},
+  "AD51": { displayName: "NY State Assembly, District 51", lastUpdated: "2020-07-16"},
+  "AD57": { displayName: "NY State Assembly, District 57", lastUpdated: "2020-06-24"},
 }
 
 const table_cols = [
@@ -82,7 +82,7 @@ const rowHTML = (d, i) => `
 function buildHeader(div, district) {
   div.append("h2").html(`
     <img src='img/${district}.png' style='height:50px;width:50px;vertical-align: text-bottom;'/>
-    ${districtNames[district]}
+    ${districtConfig[district].displayName}
   `);
   div.append("hr");
 }

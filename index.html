@@ -13,7 +13,7 @@
 <meta name="twitter:description" content="Follow the 2020 New York Primary results live with NYC-DSA.">
 <meta name="twitter:image" content="img/dsa-for-the-many.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="4_red_full.png?v=1" type="image/png">
+<link rel="icon" href="img/4_red_full.png" type="image/png">
 <script src="js/main.js"></script>
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script src="https://d3js.org/topojson.v1.min.js"></script>
@@ -85,10 +85,14 @@ d3.tsv(file)
 
       buildHeader(div, district.key);
       buildResultsTable(div, sorted);
-      
       div.append("p")
           .attr("class", "total-results")
-          .html(sorted[0].total.toLocaleString() + " votes (" + percentage(sorted[0].total, sorted[0].reg_dems) + "% turnout)<br />" + sorted[0].reporting.toLocaleString() + " of " + sorted[0].precincts + " election districts partially reporting<br>");
+          .html(`
+            ${sorted[0].total.toLocaleString()} votes (${percentage(sorted[0].total, sorted[0].reg_dems)}% turnout)<br>
+            ${sorted[0].reporting.toLocaleString()} of ${sorted[0].precincts} election districts ${(sorted[0].reporting < sorted[0].precincts ?  "partially " : "")}reporting<br>
+            <br>
+            Last updated on ${districtConfig[district.key].lastUpdated}
+          `);
 
       div.append("p")
           .attr("class", "results-p")
