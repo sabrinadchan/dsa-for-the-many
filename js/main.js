@@ -4,7 +4,7 @@ const candidateConfig = {
   "Badrun N. Khan": {color: "#BA80BF", },
   "Samuel H. Sloan": {color: "#72D793", },
   "Samelys L\u00F3pez": {color: "#EC1F27", },
-  "Ritchie Torres": {color: "#5CC7DD", },
+  "Ritchie Torres": {color: "#5CC7DD", winner: true},
   "Rub\u00E9n D\u00EDaz": {color: "#BA80BF", },
   "Michael A. Blake": {color: "#72D793", },
   "Ydanis Rodriguez": {color: "#E6CD58", },
@@ -18,13 +18,13 @@ const candidateConfig = {
   "Jabari Brisport": {color: "#EC1F27", },
   "Tremaine S. Wright": {color: "#5CC7DD", },
   "Jason Salmon": {color: "#BA80BF", },
-  "Zohran Kwame Mamdani": {color: "#EC1F27", },
+  "Zohran Kwame Mamdani": {color: "#EC1F27", winner: true},
   "Aravella Simotas": {color: "#5CC7DD", },
   "Marcela Mitaynes": {color: "#EC1F27", winner: true},
   "Felix W. Ortiz": {color: "#5CC7DD", },
   "Genesis E. Aquino": {color: "#BA80BF"},
   "Katherine P. Walsh": {color: "#72D793", },
-  "Phara Souffrant Forrest": {color: "#EC1F27", },
+  "Phara Souffrant Forrest": {color: "#EC1F27", winner: true},
   "Walter T. Mosley III": {color: "#5CC7DD", },
 }
 
@@ -33,10 +33,10 @@ var districtConfig = {
   "NY15": { displayName: "U.S. House, NY-15", lastUpdated: "2020-06-24"},
   //"NY16": { displayName: "U.S. House, NY-16 (NYC Only)", lastUpdated: "2020-06-24"},
   "SD18": { displayName: "NY State Senate, District 18", lastUpdated: "2020-06-24"},
-  "SD25": { displayName: "NY State Senate, District 25", lastUpdated: "2020-07-21"},
-  "AD36": { displayName: "NY State Assembly, District 36", lastUpdated: "2020-06-24"},
+  "SD25": { displayName: "NY State Senate, District 25", lastUpdated: "2020-07-23"},
+  "AD36": { displayName: "NY State Assembly, District 36", lastUpdated: "2020-07-23"},
   "AD51": { displayName: "NY State Assembly, District 51", lastUpdated: "2020-07-16"},
-  "AD57": { displayName: "NY State Assembly, District 57", lastUpdated: "2020-06-24"},
+  "AD57": { displayName: "NY State Assembly, District 57", lastUpdated: "2020-07-23"},
 }
 
 const table_cols = [

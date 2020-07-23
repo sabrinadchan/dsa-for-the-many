@@ -384,7 +384,8 @@ function draw(aded) {
         ${totalVotes.toLocaleString()} votes (${percentage(totalVotes, totalRegistered)}% turnout)<br>
         ${pctReporting.length.toLocaleString()} of ${results.entries().length.toLocaleString()} election districts ${(partiallyReporting ?  "partially " : "")}reporting<br>
         <br>
-        Last updated on ${districtConfig[raceSelect.node().value].lastUpdated}
+        Last updated on ${districtConfig[raceSelect.node().value].lastUpdated}<br>
+        Absentee ballot counts were tallied by campaign volunteers and may be inaccurate or incomplete
       `);
 
   // render precinct choropleth
