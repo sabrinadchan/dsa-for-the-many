@@ -15,7 +15,7 @@ const candidateConfig = {
   "Sammy Ravelo": {color: "#E6CD58", },
   "Julia Salazar": {color: "#EC1F27", winner: true},
   "Andy J. Marte": {color: "#5CC7DD", },
-  "Jabari Brisport": {color: "#EC1F27", },
+  "Jabari Brisport": {color: "#EC1F27", winner: true},
   "Tremaine S. Wright": {color: "#5CC7DD", },
   "Jason Salmon": {color: "#BA80BF", },
   "Zohran Kwame Mamdani": {color: "#EC1F27", winner: true},
