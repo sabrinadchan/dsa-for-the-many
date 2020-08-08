@@ -32,11 +32,11 @@ var districtConfig = {
   "NY14": { displayName: "U.S. House, NY-14", lastUpdated: "2020-06-24"},
   "NY15": { displayName: "U.S. House, NY-15", lastUpdated: "2020-06-24"},
   //"NY16": { displayName: "U.S. House, NY-16 (NYC Only)", lastUpdated: "2020-06-24"},
-  "SD18": { displayName: "NY State Senate, District 18", lastUpdated: "2020-06-24"},
-  "SD25": { displayName: "NY State Senate, District 25", lastUpdated: "2020-07-23"},
-  "AD36": { displayName: "NY State Assembly, District 36", lastUpdated: "2020-07-23"},
-  "AD51": { displayName: "NY State Assembly, District 51", lastUpdated: "2020-07-16"},
-  "AD57": { displayName: "NY State Assembly, District 57", lastUpdated: "2020-07-23"},
+  "SD18": { displayName: "NY State Senate, District 18", lastUpdated: "2020-08-07"},
+  "SD25": { displayName: "NY State Senate, District 25", lastUpdated: "2020-08-07"},
+  "AD36": { displayName: "NY State Assembly, District 36", lastUpdated: "2020-08-07"},
+  "AD51": { displayName: "NY State Assembly, District 51", lastUpdated: "2020-08-07"},
+  "AD57": { displayName: "NY State Assembly, District 57", lastUpdated: "2020-08-07"},
 }
 
 const table_cols = [

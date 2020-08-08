@@ -91,8 +91,7 @@ d3.tsv(file)
             ${sorted[0].total.toLocaleString()} votes (${percentage(sorted[0].total, sorted[0].reg_dems)}% turnout)<br>
             ${sorted[0].reporting.toLocaleString()} of ${sorted[0].precincts} election districts ${(sorted[0].reporting < sorted[0].precincts ?  "partially " : "")}reporting<br>
             <br>
-            Last updated on ${districtConfig[district.key].lastUpdated}<br>
-            Absentee ballot counts were tallied by campaign volunteers and may be inaccurate or incomplete
+            Last updated on ${districtConfig[district.key].lastUpdated}
           `);
 
       div.append("p")
