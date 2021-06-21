@@ -39,16 +39,6 @@ var districtConfig = {
   "AD57": { displayName: "NY State Assembly, District 57", lastUpdated: "2020-08-07"},
 }
 
-const table_cols = [
-  {head: "Candidate", class: "name-cell", html: r => r.candidate }, 
-  {head: "In Person", class: "num-cell", html: r => r.votes }, 
-  {head: "Absentee", class: "num-cell", html: r => r.votes }, 
-  {head: "Total", class: "num-cell", html: r => r.votes }, 
-  {head: "Pct", class: "num-cell", html: (r, i) => percentage(d.votes, d.total)},
-  {head: "", class: "num-cell", html: r => null },
-  {head: "", class: "vote-share-cell", html: r => null },
-]
-
 // colors chosen with http://tristen.ca/hcl-picker/
 // define color scales
 const percentage = (n, d) => (d ? (n / d * 100) : 0).toFixed(2);
@@ -57,27 +47,25 @@ const assignWinnerColor = c => (c in candidateConfig ? candidateConfig[c].color 
 
 const isWinner = c => (c in candidateConfig && "winner" in candidateConfig[c]);
 
-//&#127801;
-const rowHTML = (d, i) => `
-    <td class='name-cell ${(isWinner(d.candidate) ? "winner" : "")}' ${isWinner(d.candidate) ? "style='background-color:" + assignWinnerColor(d.candidate) + ";'" : ""}>
-      <table style='min-height:2em; border-collapse: collapse;'>
-        <tr>
-          <td style='background-color:${assignWinnerColor(d.candidate)}; width: 5px; padding:4px 0px; border-radius:3px;'>
-          </td>
-          <td style='padding-left:3px'>
-            <span class='candidate-name'>${d.candidate} ${(isWinner(d.candidate) ? "<span class='win-symbol'>&#10003;</span>" : "")}</span>
-          </td>
-       </tr>
-     </table>
-    </td>
-    <td class='num-cell'>${d.inPersonVotes.toLocaleString()}</td>
-    <td class='num-cell'>${d.absenteeVotes.toLocaleString()}</td>
-    <td class='num-cell'>${d.votes.toLocaleString()}</td>
-    <td class='num-cell'>${percentage(d.votes, d.total)}</td>
-    <td>${(!i ? "%" : "")}</td>
-    <td class='vote-share-cell'>
-      <div class='vote-share-bar' style='background-color:${assignWinnerColor(d.candidate)}; width:${percentage(d.votes, d.total)}%; height:10px;' />
-    </td>`;
+const columns = [
+  {head: "Candidate", class: "name-cell", tdClass: r => `${(isWinner(r.candidate) ? "winner" : "")}`, style: r => `${isWinner(r.candidate) ? "background-color:" + assignWinnerColor(r.candidate) + ";" : ""}`, html: r => `
+    <table style='min-height:2em; border-collapse: collapse;'>
+      <tr>
+        <td style='background-color:${assignWinnerColor(r.candidate)}; width: 5px; padding:4px 0px; border-radius:3px;'>
+        </td>
+        <td style='padding-left:3px'>
+          <span class='candidate-name'>${r.candidate} ${(isWinner(r.candidate) ? "<span class='win-symbol'>&#10003;</span>" : "")}</span>
+        </td>
+      </tr>
+    </table>`
+   }, 
+  {head: "In Person", class: "num-cell", html: r => r.inPersonVotes.toLocaleString() }, 
+  {head: "Absentee", class: "num-cell", html: r => r.absenteeVotes.toLocaleString() }, 
+  {head: "Total", class: "num-cell", html: r => r.votes.toLocaleString() }, 
+  {head: "Pct", class: "num-cell", html: (r, i) => percentage(r.votes, r.total)},
+  {head: "", class: null, html: (_, i) => (!i ? "%" : "") },
+  {head: "", class: "vote-share-cell", html: r => `<div class='vote-share-bar' style='background-color:${assignWinnerColor(r.candidate)}; width:${percentage(r.votes, r.total)}%; height:10px;' />` },
+];
 
 function buildHeader(div, district) {
   div.append("h2").html(`
@@ -87,6 +75,25 @@ function buildHeader(div, district) {
   div.append("hr");
 }
 
+function buildTableRows(tbody, data, columns) {
+  var rows = tbody.selectAll("tr")
+      .data(data)
+    .enter().append("tr");
+
+  rows.selectAll("td")
+      .data((row, i) => columns.map(c => {
+        var cell = {};
+        Object.keys(c).forEach(k => {
+          cell[k] = typeof c[k] == 'function' ? c[k](row) : c[k];
+        });
+        return cell;
+      }))
+    .enter().append("td")
+      .attr("class", d => d.class + ("tdClass" in d ? " " + d.tdClass : ""))
+      .attr("style", d => d.style)
+      .html(d => d.html);
+}
+
 function buildResultsTable(div, data) {
   var table = div.append("table").attr("class", "results-table"),
       thead = table.append("thead"),
@@ -94,14 +101,10 @@ function buildResultsTable(div, data) {
 
   thead.append("tr")
       .selectAll("th")
-      .data(table_cols)
+      .data(columns)
     .enter().append("th")
       .attr("class", d => d.class)
       .html(d => d.head);
 
-  tbody.selectAll("tr")
-      .data(data)
-    .enter().append("tr")
-      .html(rowHTML);
-
+  buildTableRows(tbody, data, columns);
 }
