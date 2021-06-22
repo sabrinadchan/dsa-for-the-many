@@ -130,10 +130,10 @@
     <br>
     <p id="take-action">
       <button class="action-button" title="Return to the main page" onclick="window.location.href='index.html';">Main Page</button>
-      <button class="action-button" title="View detailed results" onclick="window.location.href='full-results.html';">Detailed Results</button>
-      <button class="action-button" title="View historical election results" onclick="window.location.href='past-results.html';">Past Elections</button>
+      <button class="action-button" title="View election district results" onclick="window.location.href='full-results.html';">Detailed Results</button>
+      <button class="action-button" title="View results from past NYC-DSA-endorsed campaigns" onclick="window.location.href='past-results.html';">Past Elections</button>
       <button class="action-button" title="Join DSA" onclick="window.open('https://dsausa.org/join','_blank');">Join DSA</button>
-      <button class="action-button" title="Make a recurring donation to the NYC-DSA's PAC" onclick="window.open('https://secure.actblue.com/donate/nyc-dsa-pac-1?refcode=eday&recurring=1','_blank');">Donate to NYC-DSA's PAC</button>
+      <button class="action-button" title="Make a recurring donation to NYC-DSA's PAC" onclick="window.open('https://secure.actblue.com/donate/nyc-dsa-pac-1?refcode=results-site&recurring=1','_blank');">Donate to NYC-DSA's PAC</button>
       <!--<button class="action-button" title="Sign up for the NYC-DSA Racial Justice Working Group’s DefundNYPD campaign" onclick="window.open('https://defundnypd.com','_blank');">Join the #DefundNYPD Campaign</button>-->
     </p>
   </header>
@@ -211,7 +211,7 @@ caption.update = function (d) {
     </thead>`
     + results.get(d.properties.elect_dist).candidates.map((r,i) => `
         <tr>
-          <td class='name-cell' style='background-color:${assignWinnerColor(r.race)}'>${r.race}</td>
+          <td class='name-cell' style='background-color:${assignWinnerColor(r.race)}'>${displayName(r.race)}</td>
           <td class='num-cell'>${r.inPersonVotes}</td>
           <td class='num-cell'>${r.absenteeVotes}</td>
           <td class='num-cell'>${r.votes}</td>
@@ -285,10 +285,10 @@ d3.json(`data/${year}/nyc-aded.topojson`)
         })
         data.forEach(d => {
           results.set(d.ad_ed.replace("-", ""), {
-            absentee_requested: +d.absentee_requested,
-            total_reg_dems: +d.total_reg_dems,
+            absentee_requested: +d.absentee_requested || 0,
+            total_reg_dems: +d.total_reg_dems || 0,
             reporting: parseFloat(d.reporting),
-            candidates: candidates.map(c => { return {race: c, inPersonVotes: +d["candidate|"+c], absenteeVotes: +d["absentee|" + c] || 0, votes: +d["candidate|"+c] + (+d["absentee|" + c] || 0), pct: percentage(+d["candidate|"+c] + (+d["absentee|" + c] || 0), +d.total + (+d.totalAbsentee || 0)) }; }).sort((a,b) => b.votes - a.votes)
+            candidates: candidates.map(c => { console.log(d); return {race: c, inPersonVotes: (+d["candidate|"+c] || 0), absenteeVotes: +d["absentee|" + c] || 0, votes: (+d["candidate|"+c] || 0) + (+d["absentee|" + c] || 0), pct: percentage((+d["candidate|"+c] || 0) + (+d["absentee|" + c] || 0), +d.total + (+d.totalAbsentee || 0)) }; }).sort((a,b) => b.votes - a.votes)
           })
         });
         draw(aded);
