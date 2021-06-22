@@ -35,7 +35,7 @@ const absenteeColumns = [
 const columns = [
   {head: "Candidate", class: "name-cell", tdClass: r => `${(isWinner(r.candidate) ? "winner" : "")}`, style: r => `${isWinner(r.candidate) ? "background-color:" + assignWinnerColor(r.candidate) + ";" : ""}`, html: r => styleCandidateName(r)
    }, 
-  {head: "Votes", class: "num-cell", html: r => r.votes.toLocaleString() }, 
+  {head: "Round 1", class: "num-cell", html: r => r.votes.toLocaleString() }, 
   {head: "Pct", class: "num-cell", html: (r, i) => percentage(r.votes, r.total)},
   {head: "", class: null, html: (_, i) => (!i ? "%" : "") },
   {head: "", class: "vote-share-cell", html: r => winnerBar(r) },
@@ -84,6 +84,7 @@ const config = {
       "AD57": { district: "AD57", headerName: "NY State Assembly, District 57", dropDownName: "AD-57 (Souffrant Forrest)", file: "Member of the Assembly - District 57.tsv", lastUpdated: "2020-08-07"},
     },
     "columns": absenteeColumns,
+    "caption": "update2020",
   },
   "2021": {
     "election": "2021 NYC Democratic Primary",
@@ -143,6 +144,7 @@ const config = {
       "CD39": { district: "CD39", headerName: "NYC Council, Brooklyn, District 39", dropDownName: "CD-39 (West)", file: "Member of the City Council - District 39.tsv", lastUpdated: "2021-06-22"},
     },
     "columns": columns,
+    "caption": "update2021",
   }
 }
 
