@@ -366,7 +366,7 @@ function draw(aded) {
         ${totalVotes.toLocaleString()} votes (${percentage(totalVotes, totalRegistered)}% turnout)<br>
         ${pctReporting.length.toLocaleString()} of ${results.entries().length.toLocaleString()} election districts ${(partiallyReporting ?  "partially " : "")}reporting<br>
         <br>
-        Unofficial results from Round 1<br>
+        ${year == "2021" ? "Unofficial results from Round 1<br>" : ""}
         Last updated on ${config[year]["districts"][raceSelect.node().value].lastUpdated}
       `);
 
