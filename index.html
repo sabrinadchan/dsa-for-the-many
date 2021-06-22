@@ -49,6 +49,7 @@
     <a href="https://www.socialists.nyc/"><img id="nyc-dsa-logo" src="img/4_red_full.png" alt="logo" style="width:100px;height:100px" /></a>
     <br>
     <p id="take-action">
+      <button class="action-button" title="Return to the main page" onclick="window.location.href='index.html';">Main Page</button>
       <button class="action-button" title="View detailed results" onclick="window.location.href='full-results.html';">Detailed Results</button>
       <button class="action-button" title="View historical election results" onclick="window.location.href='past-results.html';">Past Elections</button>
       <button class="action-button" title="Join DSA" onclick="window.open('https://dsausa.org/join','_blank');">Join DSA</button>
@@ -56,7 +57,7 @@
       <!--<button class="action-button" title="Sign up for the NYC-DSA Racial Justice Working Group’s DefundNYPD campaign" onclick="window.open('https://defundnypd.com','_blank');">Join the #DefundNYPD Campaign</button>-->
     </p>
   </header>
-  <h1>2020 NY Democratic Primary Election Results</h1>
+  <h1 id="title"></h1>
   <div id="results">
   </div>
 <script type="text/javascript">
@@ -65,6 +66,8 @@ var url = new URL(window.location.href),
     defaultYear = "2021",
     year = url.searchParams.get("year") || defaultYear,
     file = `data/${year}/summary.tsv`;
+
+d3.select("#title").html(`${config[year]["election"]} Election Results`);
 
 d3.tsv(file, d3.autoType)
   .then(data => {
