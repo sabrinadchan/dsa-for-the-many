@@ -50,8 +50,9 @@
     <br>
     <p id="take-action">
       <button class="action-button" title="View detailed results" onclick="window.location.href='full-results.html';">Detailed Results</button>
+      <button class="action-button" title="View historical election results" onclick="window.location.href='past-results.html';">Past Elections</button>
       <button class="action-button" title="Join DSA" onclick="window.open('https://dsausa.org/join','_blank');">Join DSA</button>
-      <button class="action-button" title="Make a recurring donation to the NYC-DSA's PAC" onclick="window.open('https://secure.actblue.com/donate/nyc-dsa-pac-1?refcode=eday&recurring=1','_blank');">Donate to NYC-DSA PAC</button>
+      <button class="action-button" title="Make a recurring donation to the NYC-DSA's PAC" onclick="window.open('https://secure.actblue.com/donate/nyc-dsa-pac-1?refcode=eday&recurring=1','_blank');">Donate to NYC-DSA's PAC</button>
       <!--<button class="action-button" title="Sign up for the NYC-DSA Racial Justice Working Group’s DefundNYPD campaign" onclick="window.open('https://defundnypd.com','_blank');">Join the #DefundNYPD Campaign</button>-->
     </p>
   </header>
@@ -60,21 +61,13 @@
   </div>
 <script type="text/javascript">
 // define dropdown lists and their options
-const file = "data/summary.tsv"
+var url = new URL(window.location.href),
+    defaultYear = "2021",
+    year = url.searchParams.get("year") || defaultYear,
+    file = `data/${year}/summary.tsv`;
 
-d3.tsv(file)
+d3.tsv(file, d3.autoType)
   .then(data => {
-    data.forEach(function(d) {
-      d.inPersonVotes = +d.inPersonVotes;
-      d.absenteeVotes = +d.absenteeVotes || 0;
-      d.votes = +d.votes || +d.inPersonVotes;
-      d.total = +d.total;
-      d.reporting = +d.reporting;
-      d.reg_dems = +d.reg_dems;
-      d.precincts = +d.precincts;
-      d.absentee_ballots = +d.absentee_ballots;
-    });
-
     var nested = d3.nest()
         .key(d => d.district)
         .entries(data);
@@ -84,19 +77,20 @@ d3.tsv(file)
           sorted = district.values.sort((a, b) => d3.descending(a.votes, b.votes));
 
       buildHeader(div, district.key);
-      buildResultsTable(div, sorted);
+      buildResultsTable(div, sorted, config[year]["columns"]);
       div.append("p")
           .attr("class", "total-results")
           .html(`
             ${sorted[0].total.toLocaleString()} votes (${percentage(sorted[0].total, sorted[0].reg_dems)}% turnout)<br>
             ${sorted[0].reporting.toLocaleString()} of ${sorted[0].precincts} election districts ${(sorted[0].reporting < sorted[0].precincts ?  "partially " : "")}reporting<br>
             <br>
-            Last updated on ${districtConfig[district.key].lastUpdated}
+            Unofficial results from Round 1<br>
+            Last updated on ${config[year]["districts"][district.key].lastUpdated}
           `);
 
       div.append("p")
           .attr("class", "results-p")
-          .html("<a href='full-results.html?district=" + district.key + "'>Election district results</a>");
+          .html(`<a href='full-results.html?year=${year}&district=${district.key}'>Election district results</a>`);
     });
   });
 </script>
