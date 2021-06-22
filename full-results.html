@@ -43,8 +43,12 @@
   stroke-width: 0.25px;
 }
 
-.precinct-path.active {
+.precinct-path.hover {
   stroke-width: 1.5px;
+}
+
+.precinct-path.locked {
+  stroke-width: 2.5px;
 }
 
 .leaflet-overlay-pane svg path{
@@ -147,6 +151,8 @@
 <script type="text/javascript">
 var candidates,
     results;
+
+var locked = false;
 
 var url = new URL(window.location.href),
     defaultYear = "2021",
@@ -372,26 +378,33 @@ function draw(aded) {
       .attr("id", d => "aded" + d.properties.elect_dist)
       .attr("fill", d => { var winner = results.get(d.properties.elect_dist).candidates[0]; return winner.votes ? assignWinnerColor(winner.race) : "white" })
       .on("mouseover", function(d) {
-        d3.select(this).classed("active", true);
-        d3.select(this).raise();
-        caption.update(d);      
-      })
-      .on("touchstart", function(d) {
-        if (d3.select(this).classed("active")) {
-          d3.select(this).classed("active", null);
-          caption.update(null);
-        } else {
-          d3.select(".precinct-path.active").classed("active", null);
-          d3.select(this).classed("active", true);
+        if (!locked) {
+          d3.select(this).classed("hover", true);
           d3.select(this).raise();
           caption.update(d);
         }
       })
       .on("mouseout", function(d) {
-        d3.select(".precinct-path.active").classed("active", null);
-        caption.update(null);
-        d3.select(this).lower();
-      });
+        if (!locked) {
+          d3.select(this).classed("hover", null);
+          caption.update(null);
+        }
+      })
+      .on("click", function(d) {
+        if (d3.select(this).classed("locked")) {
+          locked = false;
+          d3.select(this).classed("locked", null);
+          caption.update(null);
+        } else {
+          locked = true;
+          d3.select(".precinct-path.hover").classed("hover", null);
+          d3.select(".precinct-path.locked").classed("locked", null);
+          d3.select(this).classed("locked", true);
+          d3.select(this).raise();
+          caption.update(d);
+        }
+      })
+      .call(d3.drag().clickDistance(5));
 
   // add district boundary
   var boundaryPath = svg.append("path")
