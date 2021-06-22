@@ -126,13 +126,14 @@
     <br>
     <p id="take-action">
       <button class="action-button" title="Return to the main page" onclick="window.location.href='index.html';">Main Page</button>
+      <button class="action-button" title="View detailed results" onclick="window.location.href='full-results.html';">Detailed Results</button>
       <button class="action-button" title="View historical election results" onclick="window.location.href='past-results.html';">Past Elections</button>
       <button class="action-button" title="Join DSA" onclick="window.open('https://dsausa.org/join','_blank');">Join DSA</button>
       <button class="action-button" title="Make a recurring donation to the NYC-DSA's PAC" onclick="window.open('https://secure.actblue.com/donate/nyc-dsa-pac-1?refcode=eday&recurring=1','_blank');">Donate to NYC-DSA's PAC</button>
       <!--<button class="action-button" title="Sign up for the NYC-DSA Racial Justice Working Group’s DefundNYPD campaign" onclick="window.open('https://defundnypd.com','_blank');">Join the #DefundNYPD Campaign</button>-->
     </p>
   </header>
-  <h1>2020 NY Democratic Primary Election Results</h1>
+  <h1 id="title"></h1>
   <div class="selection">
     <p>
       <span title="Select a race"><b>Race</b> <select class="dropdown" id="race-select"></select></span>&nbsp;&nbsp;
@@ -152,8 +153,10 @@ var url = new URL(window.location.href),
     year = url.searchParams.get("year") || defaultYear,
     district = url.searchParams.get("district");
 
+d3.select("#title").html(`${config[year]["election"]} Election Results`);
+
 // define dropdown lists and their options
-var races = config[year]["races"],
+var races = Object.values(config[year]["districts"]),
     raceSelect = d3.select("#race-select"),
     candidateSelect = d3.select("#candidate-select"); // populated after election chosen
 
@@ -163,7 +166,7 @@ raceSelect.selectAll("option.race-option")
     .attr("class", "race-option")
     .attr("file", d => d.file)
     .attr("value", d => d.district)
-    .text(d => d.race);
+    .text(d => d.dropDownName);
 
 raceSelect.node().selectedIndex = -1;
 
@@ -346,7 +349,7 @@ function draw(aded) {
   // update results table and caption
   var div = d3.select("#results");
   buildHeader(div, raceSelect.node().value)
-  buildResultsTable(div, summary);
+  buildResultsTable(div, summary, config[year]["columns"]);
 
   var pctReporting = results.entries().filter(d => d.value.reporting > 0),
       partiallyReporting = pctReporting.some(d => d.value.reporting < 99);
@@ -358,7 +361,7 @@ function draw(aded) {
         ${pctReporting.length.toLocaleString()} of ${results.entries().length.toLocaleString()} election districts ${(partiallyReporting ?  "partially " : "")}reporting<br>
         <br>
         Unofficial results from Round 1<br>
-        Last updated on ${districtConfig[raceSelect.node().value].lastUpdated}
+        Last updated on ${config[year]["districts"][raceSelect.node().value].lastUpdated}
       `);
 
   // render precinct choropleth

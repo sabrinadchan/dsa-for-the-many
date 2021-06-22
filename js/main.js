@@ -41,6 +41,7 @@ const columns = [
 
 const config = {
   "2020": {
+    "election": "2021 NY Democratic Primary",
     "candidates": {
       "Alexandria Ocasio-Cortez": {color: "#EC1F27", winner: true},
       "Michelle Caruso-Cabrera": {color: "#5CC7DD", },
@@ -71,48 +72,18 @@ const config = {
       "Walter T. Mosley III": {color: "#5CC7DD", },
     },
     "districts": {
-      "NY14": { displayName: "U.S. House, NY-14", lastUpdated: "2020-06-24"},
-      "NY15": { displayName: "U.S. House, NY-15", lastUpdated: "2020-06-24"},
-      "SD18": { displayName: "NY State Senate, District 18", lastUpdated: "2020-08-07"},
-      "SD25": { displayName: "NY State Senate, District 25", lastUpdated: "2020-08-07"},
-      "AD36": { displayName: "NY State Assembly, District 36", lastUpdated: "2020-08-07"},
-      "AD51": { displayName: "NY State Assembly, District 51", lastUpdated: "2020-08-07"},
-      "AD57": { displayName: "NY State Assembly, District 57", lastUpdated: "2020-08-07"},
+      "NY14": { district: "NY14", headerName: "U.S. House, NY-14", dropDownName: "US Congress NY-14 (Ocasio-Cortez)", file: "Representative in Congress - District 14.tsv", lastUpdated: "2020-06-24"},
+      "NY15": { district: "NY15", headerName: "U.S. House, NY-15", dropDownName: "US Congress NY-15 (L\u00F3pez)", file: "Representative in Congress - District 15.tsv", lastUpdated: "2020-06-24"},
+      "SD18": { district: "SD18", headerName: "NY State Senate, District 18", dropDownName: "SD-18 (Salazar)", file: "State Senator - District 18.tsv", lastUpdated: "2020-08-07"},
+      "SD25": { district: "SD25", headerName: "NY State Senate, District 25", dropDownName: "SD-25 (Brisport)", file: "State Senator - District 25.tsv", lastUpdated: "2020-08-07"},
+      "AD36": { district: "AD36", headerName: "NY State Assembly, District 36", dropDownName: "AD-36 (Mamdani)", file: "Member of the Assembly - District 36.tsv", lastUpdated: "2020-08-07"},
+      "AD51": { district: "AD51", headerName: "NY State Assembly, District 51", dropDownName: "AD-51 (Mitaynes)", file: "Member of the Assembly - District 51.tsv", lastUpdated: "2020-08-07"},
+      "AD57": { district: "AD57", headerName: "NY State Assembly, District 57", dropDownName: "AD-57 (Souffrant Forrest)", file: "Member of the Assembly - District 57.tsv", lastUpdated: "2020-08-07"},
     },
-    "races": [
-      {
-        district: "NY14",
-        race: "US Congress NY-14 (Ocasio-Cortez)",
-        file: "Representative in Congress - District 14.tsv"
-      },{
-        district: "NY15",
-        race: "US Congress NY-15 (L\u00F3pez)",
-        file: "Representative in Congress - District 15.tsv"
-      },{
-        district: "SD18",
-        race: "SD-18 (Salazar)",
-        file: "State Senator - District 18.tsv"
-      },{
-        district: "SD25",
-        race: "SD-25 (Brisport)",
-        file: "State Senator - District 25.tsv"
-      },{
-        district: "AD36",
-        race: "AD-36 (Mamdani)",
-        file: "Member of the Assembly - District 36.tsv"
-      },{
-        district: "AD51",
-        race: "AD-51 (Mitaynes)",
-        file: "Member of the Assembly - District 51.tsv"
-      },{
-        district: "AD57",
-        race: "AD-57 (Souffrant Forrest)",
-        file: "Member of the Assembly - District 57.tsv"
-      },
-    ],
     "columns": absenteeColumns,
   },
   "2021": {
+    "election": "2021 NYC Democratic Primary",
     "candidates": {
       "Adolfo Abreu": {color: "#EC1F27", },
       "Tiffany Cabán": {color: "#EC1F27", },
@@ -122,40 +93,13 @@ const config = {
       "Brandon West": {color: "#EC1F27", },
     },
     "districts": {
-      "CD14": { displayName: "NYC Council, The Bronx, District 14", lastUpdated: "2021-06-22"},
-      "CD22": { displayName: "NYC Council, Queens, District 22", lastUpdated: "2021-06-22"},
-      "CD23": { displayName: "NYC Council, Queens, District 23", lastUpdated: "2021-06-22"},
-      "CD35": { displayName: "NYC Council, Brooklyn, District 35", lastUpdated: "2021-06-22"},
-      "CD38": { displayName: "NYC Council, Brooklyn, District 38", lastUpdated: "2021-06-22"},
-      "CD39": { displayName: "NYC Council, Brooklyn, District 39", lastUpdated: "2021-06-22"},
+      "CD14": { district: "CD14", headerName: "NYC Council, The Bronx, District 14", dropDownName: "CD-14 (Abreu)", file: "Member of the City Council - District 14.tsv", lastUpdated: "2021-06-22"},
+      "CD22": { district: "CD22", headerName: "NYC Council, Queens, District 22", dropDownName: "CD-22 (Cabán)", file: "Member of the City Council - District 22.tsv", lastUpdated: "2021-06-22"},
+      "CD23": { district: "CD23", headerName: "NYC Council, Queens, District 23", dropDownName: "CD-23 (Kaur)", file: "Member of the City Council - District 23.tsv", lastUpdated: "2021-06-22"},
+      "CD35": { district: "CD35", headerName: "NYC Council, Brooklyn, District 35", dropDownName: "CD-35 (Hollingsworth)", file: "Member of the City Council - District 35.tsv", lastUpdated: "2021-06-22"},
+      "CD38": { district: "CD38", headerName: "NYC Council, Brooklyn, District 38", dropDownName: "CD-38 (Avilés)", file: "Member of the City Council - District 38.tsv", lastUpdated: "2021-06-22"},
+      "CD39": { district: "CD39", headerName: "NYC Council, Brooklyn, District 39", dropDownName: "CD-39 (West)", file: "Member of the City Council - District 39.tsv", lastUpdated: "2021-06-22"},
     },
-    "races": [
-      {
-        district: "CD14",
-        race: "CD-14 (Abreu)",
-        file: "Member of the City Council - District 14.tsv"
-      },{
-        district: "CD22",
-        race: "CD-22 (Cabán)",
-        file: "Member of the City Council - District 22.tsv"
-      },{
-        district: "CD23",
-        race: "CD-23 (Kaur)",
-        file: "Member of the City Council - District 23.tsv"
-      },{
-        district: "CD35",
-        race: "CD-35 (Hollingsworth)",
-        file: "Member of the City Council - District 35.tsv"
-      },{
-        district: "CD38",
-        race: "CD-38 (Avilés)",
-        file: "Member of the City Council - District 38.tsv"
-      },{
-        district: "CD39",
-        race: "CD-39 (West)",
-        file: "Member of the City Council - District 39.tsv"
-      },
-    ],
     "columns": columns,
   }
 }
@@ -163,7 +107,7 @@ const config = {
 function buildHeader(div, district) {
   div.append("h2").html(`
     <img src='img/candidates/${year}/${district}.png' style='height:50px;width:50px;vertical-align: text-bottom;'/>
-    ${config[year]["districts"][district].displayName}
+    ${config[year]["districts"][district].headerName}
   `);
   div.append("hr");
 }
