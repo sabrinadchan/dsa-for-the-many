@@ -126,8 +126,9 @@
     <br>
     <p id="take-action">
       <button class="action-button" title="Return to the main page" onclick="window.location.href='index.html';">Main Page</button>
+      <button class="action-button" title="View historical election results" onclick="window.location.href='past-results.html';">Past Elections</button>
       <button class="action-button" title="Join DSA" onclick="window.open('https://dsausa.org/join','_blank');">Join DSA</button>
-      <button class="action-button" title="Make a recurring donation to the NYC-DSA's PAC" onclick="window.open('https://secure.actblue.com/donate/nyc-dsa-pac-1?refcode=eday&recurring=1','_blank');">Donate to NYC-DSA PAC</button>
+      <button class="action-button" title="Make a recurring donation to the NYC-DSA's PAC" onclick="window.open('https://secure.actblue.com/donate/nyc-dsa-pac-1?refcode=eday&recurring=1','_blank');">Donate to NYC-DSA's PAC</button>
       <!--<button class="action-button" title="Sign up for the NYC-DSA Racial Justice Working Group’s DefundNYPD campaign" onclick="window.open('https://defundnypd.com','_blank');">Join the #DefundNYPD Campaign</button>-->
     </p>
   </header>
@@ -146,39 +147,14 @@
 var candidates,
     results;
 
+var url = new URL(window.location.href),
+    defaultYear = "2021",
+    year = url.searchParams.get("year") || defaultYear,
+    district = url.searchParams.get("district");
+
 // define dropdown lists and their options
-var races = [
-  {
-    district: "NY14",
-    race: "US Congress NY-14 (Ocasio-Cortez)",
-    file: "Representative in Congress - District 14.tsv"
-  },{
-    district: "NY15",
-    race: "US Congress NY-15 (L\u00F3pez)",
-    file: "Representative in Congress - District 15.tsv"
-  },{
-    district: "SD18",
-    race: "SD-18 (Salazar)",
-    file: "State Senator - District 18.tsv"
-  },{
-    district: "SD25",
-    race: "SD-25 (Brisport)",
-    file: "State Senator - District 25.tsv"
-  },{
-    district: "AD36",
-    race: "AD-36 (Mamdani)",
-    file: "Member of the Assembly - District 36.tsv"
-  },{
-    district: "AD51",
-    race: "AD-51 (Mitaynes)",
-    file: "Member of the Assembly - District 51.tsv"
-  },{
-    district: "AD57",
-    race: "AD-57 (Souffrant Forrest)",
-    file: "Member of the Assembly - District 57.tsv"
-  },
-]
-var raceSelect = d3.select("#race-select"),
+var races = config[year]["races"],
+    raceSelect = d3.select("#race-select"),
     candidateSelect = d3.select("#candidate-select"); // populated after election chosen
 
 raceSelect.selectAll("option.race-option")
@@ -270,11 +246,8 @@ var winnerColor = d3.scaleOrdinal(
     pctColor = d3.scaleQuantile()
     .domain([0, 75]);
 
-var url = new URL(window.location.href),
-    district = url.searchParams.get("district");
-
 // load geospatial boundaries
-d3.json("nyc-aded.topojson")
+d3.json(`data/${year}/nyc-aded.topojson`)
   .then(aded => {
     raceSelect.on("change", function() {
       update(this.value);
@@ -293,7 +266,7 @@ d3.json("nyc-aded.topojson")
     var raceDD = raceSelect.node(),
         file = raceDD.options[raceDD.selectedIndex].getAttribute("file");
 
-    d3.tsv("data/" + file +"?1")
+    d3.tsv(`data/${year}/${file}?1`)
       .then(data => {
         data.columns.forEach(d => {
           if (/^candidate\|/.test(d)) {
@@ -384,6 +357,7 @@ function draw(aded) {
         ${totalVotes.toLocaleString()} votes (${percentage(totalVotes, totalRegistered)}% turnout)<br>
         ${pctReporting.length.toLocaleString()} of ${results.entries().length.toLocaleString()} election districts ${(partiallyReporting ?  "partially " : "")}reporting<br>
         <br>
+        Unofficial results from Round 1<br>
         Last updated on ${districtConfig[raceSelect.node().value].lastUpdated}
       `);
 
