@@ -88,7 +88,7 @@ d3.tsv(file, d3.autoType)
           .attr("class", "total-results")
           .html(`
             ${sorted[0].total.toLocaleString()} votes (${percentage(sorted[0].total, sorted[0].reg_dems)}% turnout)<br>
-            ${sorted[0].reporting.toLocaleString()} of ${sorted[0].precincts} election districts ${(sorted[0].reporting < (sorted[0].precincts * .99) ?  "partially " : "")}reporting<br>
+            ${sorted[0].reporting.toLocaleString()} of ${sorted[0].precincts} election districts ${(sorted[0].reporting < sorted[0].precincts ?  "partially " : "")}reporting<br>
             <br>
             ${year == "2021" ? "Unofficial results from Round 1<br>" : ""}
             Last updated on ${config[year]["districts"][district.key].lastUpdated}
