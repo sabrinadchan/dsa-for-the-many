@@ -96,7 +96,7 @@ const config = {
       "Socrates S. Solano": {color: "#76797E", displayName: "Socrates S. Solano"},
       "Fernando A. Aquino": {color: "#E6CD58", displayName: "Fernando A. Aquino"},
 
-      "Tiffany Caban": {color: "#EC1F27", displayName: "Tiffany Cabán"},
+      "Tiffany Caban": {color: "#EC1F27", displayName: "Tiffany Cabán", winner: true},
       "Nick Velkov": {color: "#76797E", displayName: "Nick Velkov"},
       "Catherina Gioino": {color: "#BA80BF", displayName: "Catherina Gioino"},
       "John J. Ciafone": {color: "#E6CD58", displayName: "John J. Ciafone"},
