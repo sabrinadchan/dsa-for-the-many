@@ -68,7 +68,7 @@
 var url = new URL(window.location.href),
     defaultYear = "2021",
     year = url.searchParams.get("year") || defaultYear,
-    file = `data/${year}/summary.tsv`;
+    file = `data/${year}/summary.tsv?1`;
 
 d3.select("#title").html(`${config[year]["election"]} Election Results`);
 
