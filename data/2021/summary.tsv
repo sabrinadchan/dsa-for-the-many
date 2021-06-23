@@ -1,46 +1,46 @@
-district	reg_dems	precincts	reporting	votes	total	candidate
-CD14			0	0	0	Haile Rivera
-CD14			0	0	0	Yudelka Tapia
-CD14			0	0	0	Adolfo Abreu
-CD14			0	0	0	Pierina Ana Sanchez
-CD14			0	0	0	Socrates S. Solano
-CD14			0	0	0	Fernando A. Aquino
-CD14			0	0	0	Write-In
-CD22			0	0	0	Nick Velkov
-CD22			0	0	0	Catherina Gioino
-CD22			0	0	0	Tiffany Caban
-CD22			0	0	0	John J. Ciafone
-CD22			0	0	0	Evie Hantzopoulos
-CD22			0	0	0	Leonardo T. Bullaro
-CD22			0	0	0	Write-In
-CD23			0	0	0	Linda Lee
-CD23			0	0	0	Debra Markell
-CD23			0	0	0	Sanjeev Kumar Jindal
-CD23			0	0	0	Jaslin Kaur
-CD23			0	0	0	Koshy O. Thomas
-CD23			0	0	0	Harpreet S. Toor
-CD23			0	0	0	Steve Behar
-CD23			0	0	0	Write-In
-CD35			0	0	0	Deirdre M. Levy
-CD35			0	0	0	Curtis M. Harris
-CD35			0	0	0	Michael Hollingsworth
-CD35			0	0	0	Regina A. Kinsey
-CD35			0	0	0	Crystal Hudson
-CD35			0	0	0	Hector Robertson
-CD35			0	0	0	Renee T. Collymore
-CD35			0	0	0	Write-In
-CD38			0	0	0	Victor Swinton
-CD38			0	0	0	Jacqui Painter
-CD38			0	0	0	Cesar Zuniga
-CD38			0	0	0	Yu Lin
-CD38			0	0	0	Alexa Aviles
-CD38			0	0	0	Rodrigo G. Camarena
-CD38			0	0	0	Write-In
-CD39			0	0	0	Mamnun M. Haq
-CD39			0	0	0	Douglas M. Schneider
-CD39			0	0	0	Brandon West
-CD39			0	0	0	Shahana K. Hanif
-CD39			0	0	0	Briget Rein
-CD39			0	0	0	Justin M. Krebs
-CD39			0	0	0	Jessica Simmons
-CD39			0	0	0	Write-In
+candidate	votes	district	reg_dems	precincts	reporting	total
+Haile Rivera	0	CD14	98926	96	0	0
+Yudelka Tapia	0	CD14	98926	96	0	0
+Adolfo Abreu	0	CD14	98926	96	0	0
+Pierina Ana Sanchez	0	CD14	98926	96	0	0
+Socrates S. Solano	0	CD14	98926	96	0	0
+Fernando A. Aquino	0	CD14	98926	96	0	0
+Write-In	0	CD14	98926	96	0	0
+Nick Velkov	0	CD22	88215	101	0	0
+Catherina Gioino	0	CD22	88215	101	0	0
+Tiffany Caban	0	CD22	88215	101	0	0
+John J. Ciafone	0	CD22	88215	101	0	0
+Evie Hantzopoulos	0	CD22	88215	101	0	0
+Leonardo T. Bullaro	0	CD22	88215	101	0	0
+Write-In	0	CD22	88215	101	0	0
+Linda Lee	0	CD23	101265	113	0	0
+Debra Markell	0	CD23	101265	113	0	0
+Sanjeev Kumar Jindal	0	CD23	101265	113	0	0
+Jaslin Kaur	0	CD23	101265	113	0	0
+Koshy O. Thomas	0	CD23	101265	113	0	0
+Harpreet S. Toor	0	CD23	101265	113	0	0
+Steve Behar	0	CD23	101265	113	0	0
+Write-In	0	CD23	101265	113	0	0
+Deirdre M. Levy	0	CD35	132819	135	0	0
+Curtis M. Harris	0	CD35	132819	135	0	0
+Michael Hollingsworth	0	CD35	132819	135	0	0
+Regina A. Kinsey	0	CD35	132819	135	0	0
+Crystal Hudson	0	CD35	132819	135	0	0
+Hector Robertson	0	CD35	132819	135	0	0
+Renee T. Collymore	0	CD35	132819	135	0	0
+Write-In	0	CD35	132819	135	0	0
+Victor Swinton	0	CD38	89419	112	0	0
+Jacqui Painter	0	CD38	89419	112	0	0
+Cesar Zuniga	0	CD38	89419	112	0	0
+Yu Lin	0	CD38	89419	112	0	0
+Alexa Aviles	0	CD38	89419	112	0	0
+Rodrigo G. Camarena	0	CD38	89419	112	0	0
+Write-In	0	CD38	89419	112	0	0
+Mamnun M. Haq	0	CD39	123477	138	0	0
+Douglas M. Schneider	0	CD39	123477	138	0	0
+Brandon West	0	CD39	123477	138	0	0
+Shahana K. Hanif	0	CD39	123477	138	0	0
+Briget Rein	0	CD39	123477	138	0	0
+Justin M. Krebs	0	CD39	123477	138	0	0
+Jessica Simmons	0	CD39	123477	138	0	0
+Write-In	0	CD39	123477	138	0	0
