@@ -199,7 +199,9 @@ caption.onAdd = function (map) {
   return this._div;
 };
 
-caption.reset = () => "Hover over a precinct";
+caption.reset = function() {
+  this._div.innerHTML = "Hover over a precinct";
+}
 
 caption.update2020 = function (d) {
   this._div.innerHTML = (d ? `
