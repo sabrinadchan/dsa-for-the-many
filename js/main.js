@@ -42,8 +42,21 @@ const columns = [
 ];
 
 const config = {
+  "2020-06-24-0930": {
+    "election": "2020 NYS Democratic Primary (6/24 9:30am)",
+    "candidates": {
+      "Phara Souffrant Forrest": {color: "#EC1F27", displayName: "Phara Souffrant Forrest"},
+      "Walter T. Mosley III": {color: "#5CC7DD", displayName: "Walter T. Mosley III"},
+      "Write-In": {color: "#76797E", displayName: "Write-In"},
+    },
+    "districts": {
+      "AD57": { district: "AD57", headerName: "NY State Assembly, District 57", dropDownName: "AD-57 (Souffrant Forrest)", file: "Member of the Assembly - District 57.tsv", lastUpdated: "2020-06-24"},
+    },
+    "columns": absenteeColumns,
+    "caption": "update2020",
+  },
   "2020": {
-    "election": "2021 NY Democratic Primary",
+    "election": "2020 NYS Democratic Primary",
     "candidates": {
       "Alexandria Ocasio-Cortez": {color: "#EC1F27", winner: true, displayName: "Alexandria Ocasio-Cortez"},
       "Michelle Caruso-Cabrera": {color: "#5CC7DD", displayName: "Michelle Caruso-Cabrera"},
