@@ -64,39 +64,44 @@
   <div id="results">
   </div>
 <script type="text/javascript">
-// define dropdown lists and their options
-var url = new URL(window.location.href),
-    defaultYear = "2021",
-    year = url.searchParams.get("year") || defaultYear,
-    file = `data/${year}/summary.tsv?1`;
+const year = "2021";
 
 d3.select("#title").html(`${config[year]["election"]} Election Results`);
 
-d3.tsv(file, d3.autoType)
-  .then(data => {
-    var nested = d3.nest()
-        .key(d => d.district)
-        .entries(data);
+Promise.all([
+  //d3.tsv(`data/${year}/rcv-summary-cd14.tsv?1`, d3.autoType),
+  d3.tsv(`data/${year}/rcv-summary-cd22.tsv?1`, d3.autoType),
+  d3.tsv(`data/${year}/rcv-summary-cd23.tsv?1`, d3.autoType),
+  //d3.tsv(`data/${year}/rcv-summary-cd35.tsv?1`, d3.autoType),
+  //d3.tsv(`data/${year}/rcv-summary-cd38.tsv?1`, d3.autoType),
+  //d3.tsv(`data/${year}/rcv-summary-cd39.tsv?1`, d3.autoType)
+])
+.then(data => {
+  data.forEach(district => {
+    var div = d3.select("#results").append("div"),
+        districtName = district[0].district
 
-    nested.forEach(district => {
-      var div = d3.select("#results").append("div"),
-          sorted = district.values.sort((a, b) => d3.descending(a.votes, b.votes));
+    var columns = district.columns.filter(d => d != "district").map(d => {
+      if (d == "Candidate") {
+        return {head: d, class: "name-cell", tdClass: r => `${(isWinner(r[d]) ? "winner" : "")}`, style: r => `${isWinner(r[d]) ? "background-color:" + assignWinnerColor(r[d]) + ";" : ""}`, html: r => styleCandidateName(r[d])}
+      } else {
+        return {head: d, class: "num-cell", html: r => r[d].toLocaleString()}
+      }
+    });
 
-      buildHeader(div, district.key);
-      buildResultsTable(div, sorted, config[year]["columns"]);
-      div.append("p")
-          .attr("class", "total-results")
-          .html(`
-            ${sorted[0].total.toLocaleString()} votes (${percentage(sorted[0].total, sorted[0].reg_dems)}% turnout)<br>
-            ${sorted[0].reporting.toLocaleString()} of ${sorted[0].precincts} election districts ${(sorted[0].reporting < sorted[0].precincts ?  "partially " : "")}reporting<br>
-            <br>
-            ${year == "2021" ? "Unofficial results from Round 1<br>" : ""}
-            Last updated on ${config[year]["districts"][district.key].lastUpdated}
-          `);
+    buildHeader(div, districtName);
+    buildResultsTable(div, district, columns);
+    div.append("p")
+        .attr("class", "total-results")
+        .html(`
+          Unofficial RCV tabulation<br>
+          Does not include absentee and provisional ballots<br><br>
+          Last updated on ${config[year]["districts"][districtName].lastUpdated}
+        `);
 
-      div.append("p")
-          .attr("class", "results-p")
-          .html(`<a href='full-results.html?year=${year}&district=${district.key}'>Election district results</a>`);
+    div.append("p")
+        .attr("class", "results-p")
+        .html(`<a href='full-results.html?year=${year}&district=${districtName}'>Round 1 election district results</a>`);
     });
   });
 </script>
