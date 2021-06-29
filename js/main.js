@@ -8,13 +8,13 @@ const isWinner = c => (c in config[year]["candidates"] && "winner" in config[yea
 
 const displayName = c => (c in config[year]["candidates"] ? config[year]["candidates"][c]["displayName"] : c);
 
-const styleCandidateName = r => `
+const styleCandidateName = c => `
     <table style='min-height:2em; border-collapse: collapse;'>
       <tr>
-        <td style='background-color:${assignWinnerColor(r.candidate)}; width: 5px; padding:4px 0px; border-radius:3px;'>
+        <td style='background-color:${assignWinnerColor(c)}; width: 5px; padding:4px 0px; border-radius:3px;'>
         </td>
         <td style='padding-left:3px'>
-          <span class='candidate-name'>${displayName(r.candidate)} ${(isWinner(r.candidate) ? "<span class='win-symbol'>&#10003;</span>" : "")}</span>
+          <span class='candidate-name'>${displayName(c)} ${(isWinner(c) ? "<span class='win-symbol'>&#10003;</span>" : "")}</span>
         </td>
       </tr>
     </table>`;
@@ -22,7 +22,7 @@ const styleCandidateName = r => `
 const winnerBar = r => `<div class='vote-share-bar' style='background-color:${assignWinnerColor(r.candidate)}; width:${percentage(r.votes, r.total)}%; height:10px;' />`;
 
 const absenteeColumns = [
-  {head: "Candidate", class: "name-cell", tdClass: r => `${(isWinner(r.candidate) ? "winner" : "")}`, style: r => `${isWinner(r.candidate) ? "background-color:" + assignWinnerColor(r.candidate) + ";" : ""}`, html: r => styleCandidateName(r)
+  {head: "Candidate", class: "name-cell", tdClass: r => `${(isWinner(r.candidate) ? "winner" : "")}`, style: r => `${isWinner(r.candidate) ? "background-color:" + assignWinnerColor(r.candidate) + ";" : ""}`, html: r => styleCandidateName(r.candidate)
    }, 
   {head: "In Person", class: "num-cell", html: r => r.inPersonVotes.toLocaleString() }, 
   {head: "Absentee", class: "num-cell", html: r => r.absenteeVotes.toLocaleString() }, 
@@ -33,7 +33,7 @@ const absenteeColumns = [
 ];
 
 const columns = [
-  {head: "Candidate", class: "name-cell", tdClass: r => `${(isWinner(r.candidate) ? "winner" : "")}`, style: r => `${isWinner(r.candidate) ? "background-color:" + assignWinnerColor(r.candidate) + ";" : ""}`, html: r => styleCandidateName(r)
+  {head: "Candidate", class: "name-cell", tdClass: r => `${(isWinner(r.candidate) ? "winner" : "")}`, style: r => `${isWinner(r.candidate) ? "background-color:" + assignWinnerColor(r.candidate) + ";" : ""}`, html: r => styleCandidateName(r.candidate)
    }, 
   {head: "Round 1", class: "num-cell", html: r => r.votes.toLocaleString() }, 
   {head: "Pct", class: "num-cell", html: (r, i) => percentage(r.votes, r.total)},
@@ -177,6 +177,7 @@ function buildTableRows(tbody, data, columns) {
   rows.selectAll("td")
       .data((row, i) => columns.map(c => {
         var cell = {};
+
         Object.keys(c).forEach(k => {
           cell[k] = typeof c[k] == 'function' ? c[k](row) : c[k];
         });
