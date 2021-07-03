@@ -69,12 +69,12 @@ const year = "2021";
 d3.select("#title").html(`${config[year]["election"]} Election Results`);
 
 Promise.all([
-  //d3.tsv(`data/${year}/rcv-summary-cd14.tsv?1`, d3.autoType),
-  d3.tsv(`data/${year}/rcv-summary-cd22.tsv?1`, d3.autoType),
-  d3.tsv(`data/${year}/rcv-summary-cd23.tsv?1`, d3.autoType),
-  //d3.tsv(`data/${year}/rcv-summary-cd35.tsv?1`, d3.autoType),
-  //d3.tsv(`data/${year}/rcv-summary-cd38.tsv?1`, d3.autoType),
-  //d3.tsv(`data/${year}/rcv-summary-cd39.tsv?1`, d3.autoType)
+  d3.tsv(`data/${year}/RCV Summary - CD14.tsv?1`, d3.autoType),
+  d3.tsv(`data/${year}/RCV Summary - CD22.tsv?1`, d3.autoType),
+  d3.tsv(`data/${year}/RCV Summary - CD23.tsv?1`, d3.autoType),
+  d3.tsv(`data/${year}/RCV Summary - CD35.tsv?1`, d3.autoType),
+  d3.tsv(`data/${year}/RCV Summary - CD38.tsv?1`, d3.autoType),
+  d3.tsv(`data/${year}/RCV Summary - CD39.tsv?1`, d3.autoType)
 ])
 .then(data => {
   data.forEach(district => {
